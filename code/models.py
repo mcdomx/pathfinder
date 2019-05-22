@@ -158,6 +158,129 @@ def get_autoenc_model(input_height=360,
     return description, autoencoder
 
 
+def get_autoenc_model2(input_height=360,
+                      input_width=480,
+                      op_height=360,
+                      op_width=480,
+                      l2_lambda=0,
+                      epochs=20,
+                      final_activation='relu',
+                      color=True,
+                      rot=0,
+                      zoom=0,
+                      hflip=True,
+                      vflip=False,
+                      fill_mode=None,
+                      dropout=0,
+                      notes="no notes"):
+
+    if fill_mode is None:   fill_mode = 'nearest'
+
+    # use epoch time to label the results directory and file
+    epoch_time = int(time.time())
+
+    description = dict( Model_Type="CNN_encoder3072",
+                        input_height=input_height,
+                        input_width=input_width,
+                        color=color,
+                        output_height=op_height,
+                        output_width=op_width,
+                        l2_lambda=l2_lambda,
+                        final_activation=final_activation,
+                        optimizer='adadelta',
+                        loss='binary_crossentropy',
+                        learn_rate=None,
+                        batch_size=64,
+                        epochs=epochs,
+                        rotation=rot,
+                        zoom=zoom,
+                        hflip=hflip,
+                        vflip=vflip,
+                        dropout=dropout,
+                        epoch_time=epoch_time,
+                        fill_mode=fill_mode)
+
+    description.update(notes=notes)
+
+    name = str(description["epoch_time"])
+    name = name + "_" + description["Model_Type"]
+    name = name + "_epochs=" + str(description["epochs"])
+    name = name + "_notes=" + description["notes"]
+    description.update(name=name)
+
+    # Support for black and white images
+    channels = 3
+    if not color:
+        channels = 1
+
+    # MODEL DESIGN
+    # Note that some layers are optionally added based on arguments provided
+    input_img = Input(shape=(input_height, input_width, channels))
+
+    # -- ENCODER --
+    # Layer 1
+    if l2_lambda == 0:
+        x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
+    else:
+        x = Conv2D(16, (3, 3), activation='relu', padding='same',
+                   activity_regularizer=regularizers.l2(l2_lambda))(input_img)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+
+    if dropout != 0:
+        x = Dropout(dropout)(x)  # a single dropout works well with no regularization
+
+    # Layer 2
+    if l2_lambda == 0:
+        x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+    else:
+        x = Conv2D(32, (3, 3), activation='relu', padding='same',
+                   activity_regularizer=regularizers.l2(l2_lambda))(x)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+
+    # Layer 3
+    if l2_lambda == 0:
+        x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+    else:
+        x = Conv2D(64, (3, 3), activation='relu', padding='same',
+                   activity_regularizer=regularizers.l2(l2_lambda))(x)
+    x = MaxPooling2D((2, 2), padding='same')(x)
+
+    # # Layer 4
+    # if l2_lambda == 0:
+    #     x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+    # else:
+    #     x = Conv2D(128, (3, 3), activation='relu', padding='same',
+    #                activity_regularizer=regularizers.l2(l2_lambda))(x)
+    # x = MaxPooling2D((3, 3), padding='same')(x)
+
+    # Layer LAST
+    if l2_lambda == 0:
+        x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+    else:
+        x = Conv2D(128, (3, 3), activation='relu', padding='same',
+                   activity_regularizer=regularizers.l2(l2_lambda))(x)
+    encoded = MaxPooling2D((3, 3), padding='same')(x)
+    encoder = Model(input_img, encoded)
+
+    # at this point the representation is (3, 4, 256) i.e. 3072-dimensional
+
+    # -- DECODER --
+    x = Conv2D(128, (3, 3), activation='relu', padding='same')(encoded)
+    x = UpSampling2D((3, 3))(x)
+    # x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+    # x = UpSampling2D((3, 3))(x)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    decoded = Conv2D(1, (3, 3), activation=final_activation, padding='same')(x)
+
+    autoencoder = Model(input_img, decoded)
+
+    return description, autoencoder
+
 # Data Generators
 
 # Returns a generator used for training data.
