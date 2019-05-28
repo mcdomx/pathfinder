@@ -2,7 +2,7 @@
 # Author - Mark McDonald (2019)
 
 # This module contains various support methods to create
-# video files from frames.
+# video files from MAT files and JPG files.
 
 import os
 import scipy.io
@@ -12,16 +12,14 @@ import math
 from keras.preprocessing.image import ImageDataGenerator
 
 
-# Creates an MP4 video file with mask overlay
-# Arguments:
-#   source_dir: directory containing *.mat files
-#   target_dir: directory where the video will be saved
-# Return Value: List of path for each video created.
-# Summary:
-#   Image and mask data is extracted from each *.mat file.
-#   Each mask is overlayed on its respective image.
-#   Each overlayed image is added to a video sequence and saved
 def create_superimposed_video_from_MATFiles(source_dir, target_dir):
+    """
+    Creates an MP4 video file with mask overlay from directory of MAT files.
+
+    :param source_dir: directory containing *.mat files
+    :param target_dir: directory where the video will be saved
+    :return: List of filepaths for each video created
+    """
 
     video_paths = []
     for item in os.listdir(source_dir):
@@ -115,15 +113,16 @@ def create_superimposed_video_from_MATFiles(source_dir, target_dir):
     # Outermost for loop is complete.  Return paths to videos created.
     return video_paths
 
-# Creates an MP4 video file based on list of arrays
-# Arguments:
-#   image_list: list of 3-channel np.array images that make up video
-#   target_dir: directory where the video will be saved
-#   file_name: name of video file to be saved
-# Return Value: Path to video created.
-# Summary:
-#   Uses cv2 to stitch images together into video file
+
 def create_video_file(image_list, target_dir, file_name):
+    """
+    Creates an MP4 video file based on list of arrays.
+
+    :param image_list: list of 3-channel np.array images that make up video
+    :param target_dir: directory where the video will be saved
+    :param file_name: file name of video file to be saved
+    :return: Path to video created
+    """
 
     # Make sure file is appended with filetype
     if file_name[-4:] != ".mp4": file_name = file_name + ".mp4"
@@ -150,35 +149,40 @@ def create_video_file(image_list, target_dir, file_name):
     return video_path
 
 
-# Creates an MP4 overlay video file on mask created from model
-# Arguments:
-#   source_dir: directory containing a 'data' directory that contains base images
-#   model: Keras trained model that will generate mask based on images
-#   description: dictionary containing entries describing model
-#   target_dir: directory where video will be saved
-#   batch_size: Number of images to convert at a time.  If none, all files in dir will be converted at once
-#   overlay_text: text that will be overlayed on video
-#   color(boolean): whether or not the test data will be color
-#   bias(float): value between -10 and +10.  More(+) of less(-) aggressive with masked areas.
-# Return Value: Path to video created
-# The video will be saved with a name containing relevant model parameters.
-# Requires method which returns a configured generator for test images.
-# Summary:
-#   Retrieves test images from generator.
-#   Creates a mask for each image and creates overlay image
-#   Calls function to create video based on list of np.array images.
-def create_video_with_test_data(source_dir,
-                                model,
-                                description,
-                                target_dir,
-                                filename=None,
-                                batch_size=None,
-                                overlay_text=None,
-                                color=None,
-                                bias=0,
-                                fps=20.0,
-                                invert=False):
+def create_video_with_mask(source_dir,
+                           model,
+                           description,
+                           target_dir,
+                           filename=None,
+                           batch_size=None,
+                           overlay_text=None,
+                           color=None,
+                           fps=20.0,
+                           follow_bias=0.9,
+                           follow_intensity_adj=1.75,
+                           avoid_bias=.7,
+                           avoid_intensity_adj=.5,
+                           img_mask_ratio=.5):
 
+    """
+    Creates an MP4 video file with mask overlay generated from model.
+
+    :param source_dir: directory containing a 'data' directory that contains base images
+    :param model: Keras trained model that will generate mask based on images
+    :param description: dictionary containing entries describing model
+    :param target_dir: directory where video will be saved
+    :param filename: (opt) filename to save video as. Defaults to overlay_text if not provided
+    :param batch_size: Number of images to convert at a time.  If none, all files in dir will be converted at once
+    :param overlay_text: text that will be overlaied on top line of video
+    :param color: (bool) If true, video will be in color.  If empty, defaults to description value.
+    :param fps: Frames per second. Default 20 fps.
+    :param follow_bias: Must be >0.  >1 increases follow area.  <1 decreases follow area.
+    :param follow_intensity_adj: Must be >0.  >1 increases intensity of color.
+    :param avoid_bias: Must be >0.  >1 increases avoid area.  <1 decreases avoid area.
+    :param avoid_intensity_adj: Must be >0.  >1 increases intensity of color.
+    :param img_mask_ratio: Must be >0 and <1.  Percentage of image intensity under mask areas.
+    :return: Path to video created
+    """
     output_height = description["output_height"]
     output_width = description["output_width"]
 
@@ -212,7 +216,7 @@ def create_video_with_test_data(source_dir,
                                        color=color)
 
     # steps is the number of times a batch needs to be called to get all images
-    steps = math.ceil(num_images/batch_size)
+    steps = math.ceil(num_images / batch_size)
 
     print("Processing {} images in {} batches.".format(num_images, steps))
 
@@ -232,6 +236,7 @@ def create_video_with_test_data(source_dir,
     # for each batch, create superimposed images and write to video file
     for step in range(steps):
 
+        print("Processing batch {}/{}".format(step+1, steps))
 
         images = next(generator)
 
@@ -242,41 +247,33 @@ def create_video_with_test_data(source_dir,
             zero_length = True
             continue
 
-        # generate masks from images using model model
-        masks = model.predict(np.asarray(images))
+        # generate masks from images using model
+        masks = np.uint8(model.predict(np.asarray(images)))
 
-        avg = np.average(masks)
-        print("Processing batch: {}/{}".format(step + 1, steps), end=" | ")
-        print("Max/Min/Avg mask value: {}/{}/{}".format(np.round(np.amax(masks), decimals=2),
-                                                        np.round(np.amin(masks), decimals=2),
-                                                        np.round(avg, decimals=2)))
+        # creates 3-channel masks with follow and avoid heatmaps in RGB
+        new_masks = create_follow_and_avoid_mask_layers(masks,
+                                                        follow_bias=follow_bias,
+                                                        follow_intensity_adj=follow_intensity_adj,
+                                                        avoid_bias=avoid_bias,
+                                                        avoid_intensity_adj=avoid_intensity_adj)
 
-        # A bias will move the average to show more or less highlighted areas
-        if bias < 0:
-            bias = (1 - avg) * (bias / 10)
-            avg += bias
-        if bias > 0:
-            bias = avg * (bias / 10)
-            avg -= bias
-
-        follow_layer = 1
-        avoid_layer = 0
-        if invert:
-            follow_layer = 0
-            avoid_layer = 1
+        # Keras image generator generates in RGB format
+        # Convert to GBR to work with OpenCV
+        new_masks = new_masks[..., ::-1]
+        images = images[..., ::-1]
 
         # generate superimposed images
-        for i, mask in enumerate(masks):
+        # opencv saves and reads in BGR
+        for i, mask in enumerate(new_masks):
+            # Knockout portions of image that include activated overlay values
+            merged = mask[:, :, 0] + mask[:, :, 1] + mask[:, :, 2]
+            adj_array = np.array(merged != 0) * img_mask_ratio + (np.array(merged == 0))
+            combined = np.zeros((images[i].shape[0], images[i].shape[1], images[i].shape[2]))
+            combined[:, :, 0] = images[i][:, :, 0] * adj_array
+            combined[:, :, 1] = images[i][:, :, 1] * adj_array
+            combined[:, :, 2] = images[i][:, :, 2] * adj_array
 
-            # mask is created by highlighting pixels that exceed the average
-            mask = cv2.resize(mask, (output_width, output_height))
-            new_mask = np.zeros((3, mask.shape[0], mask.shape[1]))
-            new_mask[avoid_layer] = np.array(mask <= avg) * 200  # Red Layer
-            new_mask[follow_layer] = np.array(mask >= avg) * 200  # Green Layer
-            new_mask = np.moveaxis(new_mask, 0, 2)
-            new_mask = np.uint8(new_mask)
-
-            superimposed_image = np.uint8(images[i]*.7 + new_mask*.3)
+            superimposed_image = np.uint8(combined + mask * (1 - img_mask_ratio))
 
             # Create text overlay for the frame
             # need to create jpg file first
@@ -284,9 +281,9 @@ def create_video_with_test_data(source_dir,
             tempfile = cv2.imread("tempfile.jpg")  # read newly created file
             cv2.putText(tempfile,
                         overlay_text,
-                        (20, 30),
+                        (10, 10),
                         cv2.FONT_HERSHEY_SIMPLEX,
-                        .40,
+                        .30,
                         (255, 255, 255),
                         1,
                         lineType=cv2.LINE_AA)
@@ -308,21 +305,67 @@ def create_video_with_test_data(source_dir,
     print("Video created {}".format(video_path))
 
 
-# Define a test image generator for all files in a directory as a single batch
-# Arguments:
-#   source_dir: directory containing a 'data' directory that contains base images
-#   description: dictionary containing entries describing model that will use generator
-#   color(boolean): Whether or not yielded images are color or black and white.
-#                   None (missing color argument) will force use of color
-#                   variable from description dictionary.
-# Return Value: Configured ImageGenerator that can be called with next(<generator_name>)
-# The video will be saved with a name containing relevant model parameters.
-# Requires method which returns a configured generator for test images.
-# Summary:
-#   Retrieves test images from generator.
-#   Creates a mask for each image and creates overlay image
-#   Calls function to create video based on list of np.array images.
+def create_follow_and_avoid_mask_layers(masks,
+                                        follow_bias=0.9, follow_intensity_adj=1.75,
+                                        avoid_bias=.7, avoid_intensity_adj=.5):
+    """
+    Accepts 1-channel masks and returns 3-channel masks with heatmaps
+
+    :param masks: Batch of 1-channel masks
+    :param follow_bias: If 0, no follow mask created.  >1 increases follow area.  <1 decreases follow area.
+    :param follow_intensity_adj: Must be >0.  >1 increases intensity of color.
+    :param avoid_bias: If 0, no avoid mask created.  >1 increases avoid area.  <1 decreases avoid area.
+    :param avoid_intensity_adj: Must be >0.  >1 increases intensity of color.
+    :return: batch of 3-channel masks with follow and avoid heatmaps
+    """
+
+    # rescale from 0 to 255
+    adj_masks = masks - np.amin(masks)  # set smallest value to zero
+    scale = 255 / np.amax(adj_masks)  # determine scale so max value will be 255
+    adj_masks = np.uint8(adj_masks * scale)
+    avg = np.uint8(np.average(adj_masks))
+
+    # Heatmap layers will be added to new 3-channel mask
+    rgb_mask = np.zeros((masks.shape[0], masks.shape[1], masks.shape[2], 3))
+
+    # Create follow heatmap
+    if follow_bias:
+        follow_layer = np.array(adj_masks > (avg / follow_bias)) * adj_masks
+        # Adjust color intensity
+        follow_intensed_layer = follow_layer * follow_intensity_adj
+        # Prevent clipping
+        follow_layer = np.uint8(
+            np.array(follow_intensed_layer >= 255) * 255 + np.array(follow_intensed_layer < 255) * follow_intensed_layer)
+        # add follow channel to new mask
+        rgb_mask[:, :, :, 1] = follow_layer[:, :, :, 0]
+
+    # Create avoid heatmap
+    if avoid_bias:
+        avoid_layer = 0 - (np.array(adj_masks < (avg * avoid_bias)) * adj_masks)
+        # Adjust color intensity
+        avoid_intensed_layer = avoid_layer * avoid_intensity_adj
+        # Prevent clipping
+        avoid_layer = np.uint8(
+            np.array(avoid_intensed_layer >= 255) * 255 + np.array(avoid_intensed_layer < 255) * avoid_intensed_layer)
+        # knockout portions of avoid channel that intersect with follow channel
+        if follow_bias:
+            avoid_layer = np.uint8((1 - np.array(follow_layer / 255)) * avoid_layer)
+        # add avoid channel to new mask
+        rgb_mask[:, :, :, 0] = avoid_layer[:, :, :, 0]
+
+    return np.uint8(rgb_mask)
+
+
 def get_test_img_generator(source_dir, description, batch_size=None, color=None):
+    """
+    Defines an unshuffled image generator for files in a source directory.
+
+    :param source_dir: directory containing a 'data' directory that contains base images
+    :param description: dictionary containing entries describing model that will use generator
+    :param batch_size: (opt) Batch size for each generator call. If None, uses description value.
+    :param color: (opt)(bool) Color or black and white. If None, uses description value.
+    :return: Configured Keras ImageDataGenerator() object.
+    """
 
     print("Creating test image generator:")
     print("\t"+source_dir)
