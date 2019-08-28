@@ -122,7 +122,7 @@ The ‘manual\_human\_labeling\_task’ frames have a resolution of 640x480 with
 
 Each frame will be treated as a unique image for training purposes and not as a sequential video. For this series of images (which can be combined to make a video), the outcome of any frame is not dependent on the previous one so no sequential analysis effort is necessary. Each frame can be considered a unique image and training does not need to be sequential.
 
-<img src="media/image1.png" width="593" height="136" />
+<img src="media/image1.png" />
 
 Figure : Mask Overlay
 
