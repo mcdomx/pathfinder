@@ -74,6 +74,7 @@ Frame Files
 
 Each directory contains several files where each file represents a frame of video. The file format of each frame is “\*.mat” which includes several pieces of extractable information related to the frame. The data in each MAT file is a dictionary with the following keys:
 
+<code>
 \_\_header\_\_
 
 \_\_version\_\_
@@ -111,6 +112,7 @@ stereo\_mask\_precalc
 feature\_image\_precalc
 
 manual\_human\_labeling\_mask
+</code>
 
 For the scope of this project, we will focus on the data in ‘im\_rgb’ and ‘manual\_human\_labeling\_task’ where the ‘im\_rgb’ data is the source image and the ‘manual\_human\_labeling\_task’ data is the respective mask.
 
