@@ -152,7 +152,7 @@ Downloaded data will be in 9 directories. The directories with “SupplimentalFr
 
 **Move Downloaded Data into the Following Local Data Structure**
 
-> <img src="media/image7.png" width="530" height="261" />
+> <img src="media/image2.png" />
 >
 > Figure : Each directory includes a series of video frames. Each directory includes a tag that represents the scene and lighting conditions. E.g. “DS1A” – Data Sequence 1 Scene A
 
@@ -281,7 +281,7 @@ Each of the following steps are shown in detail in the **demonstration** section
 >
 > import video\_support\_processes as pf\_video
 
-<img src="media/image8.png" width="720" height="53" />
+<img src="media/image3.png" />
 
 ### STEP 3 - Set Variables
 
@@ -339,7 +339,7 @@ else:
 
 print("SUCCESS: Found base directory: {}".format(base\_dir))
 
-<img src="media/image9.png" width="720" height="47" />
+<img src="media/image3-1.png" />
 
 > Now, we can set the supporting directory structure in our application. The ‘True’ argument is used to delete and recreate directories that already exist. During development, ‘False’ avoids recreating data when we only need to set variable names for the directories:
 
@@ -351,11 +351,11 @@ print("SUCCESS: Found base directory: {}".format(base\_dir))
 
 train\_dir, train\_video\_dir, val\_dir = pf\_preprocess.set\_directories(base\_dir, True)
 
-> <img src="media/image10.png" width="720" height="163" />
+> <img src="media/image3-2.png"  />
 
 **The Data Directory Structure After Step 3**
 
-<img src="media/image11.png" width="427" height="404" />
+<img src="media/image4.png" />
 
 Figure : Data Directory Structure
 
@@ -371,7 +371,7 @@ pf\_preprocess.create\_img\_and\_mask\_data(original\_train\_dir, train\_dir)
 
 pf\_preprocess.create\_img\_and\_mask\_data(original\_test\_dir, test\_dir)
 
-<img src="media/image12.png" width="720" height="435" />
+<img src="media/image5.png" />
 
 > This process extracted an image and a mask from each of the files from the original data set. Each image and mask pair is saved into a respective directory where it will be accessed for training and validation. Additionally, the test video sequence images are extracted and saved.
 >
@@ -381,7 +381,7 @@ pf\_preprocess.create\_img\_and\_mask\_data(original\_test\_dir, test\_dir)
 
 pf\_preprocess.create\_val\_set(train\_dir, val\_dir, val\_split)
 
-<img src="media/image13.png" width="720" height="35" />
+<img src="media/image6.png" />
 
 ### SIDEBAR: Understanding the data set
 
@@ -405,19 +405,19 @@ for k in mat\_file.keys():
 
 print(k)
 
-> <img src="media/image14.png" width="221" height="253" />
+> <img src="media/image7.png" />
 >
 > We observe several pieces of data, but for our project, we will only need the ‘im\_rgb’ and ‘manual\_human\_labeling\_mask’ items. The ‘im\_rbg’ item is an array that represents the base image and the ‘manual\_human\_labeling\_mask’ is the respective mask.
 >
 > We have one MAT file for every frame of video:
 >
-> <img src="media/image15.png" width="483" height="313" />
+> <img src="media/image8.png" />
 >
 > The frames are separated into directories where each directory is a different scene. We observe 6 scenes in our training set. The 6 scenes are in 3 settings with 2 different lighting conditions for each.
 >
 > After running the data extraction script, we have images and masks in supporting directories from each of the frames:
 >
-> <img src="media/image16.png" width="495" height="246" />
+> <img src="media/image9.png" />
 >
 > The ‘data’ directory is necessary for the data generators that we will use to generate batches during training.
 >
@@ -425,7 +425,7 @@ print(k)
 >
 > Each jpg has a corresponding mask file with the same name:
 >
-> <img src="media/image17.png" width="487" height="242" />
+> <img src="media/image10.png" />
 >
 > The masks don’t preview because they only have 1-channel.
 >
@@ -437,7 +437,7 @@ orig\_image = mat\_file\['im\_rgb'\]
 
 print("Image Shape: ", orig\_image.shape)
 
-<img src="media/image18.png" width="394" height="37" />
+<img src="media/image11.png" />
 
 > As well as the mask:
 
@@ -447,7 +447,7 @@ orig\_mask = mat\_file\['manual\_human\_labeling\_mask'\]
 
 print("Mask Shape: ",orig\_mask.shape)
 
-<img src="media/image19.png" width="394" height="37" />
+<img src="media/image12.png" />
 
 > The original data is 640 x 480. We will make this smaller to train. Note that these are in vertical format. We will rotate them when they are extracted.
 >
@@ -477,7 +477,7 @@ for k in mat\_test\_file.keys():
 
 print(k)
 
-> <img src="media/image20.png" width="287" height="271" />
+> <img src="media/image13.png" />
 >
 > Note that the ‘manual\_human\_labeling\_mask’ is missing. This is test data so there is no mask. We will get mask data from our model to create superimposed videos after training is complete.
 
@@ -489,11 +489,11 @@ print(k)
 
 pf\_video.create\_superimposed\_video\_from\_MATFiles(original\_train\_dir, train\_video\_dir)
 
-<img src="media/image21.png" width="604" height="108" />
+<img src="media/image14.png" />
 
 > A screen shot of one of the videos is displayed below:
 >
-> <img src="media/image22.png" width="465" height="345" />
+> <img src="media/image15.png" />
 
 Figure : Frame from video of superimposed mask from training set
 
@@ -513,7 +513,7 @@ pf\_preprocess.convert\_jpg\_mask\_to\_binary\_mask(os.path.join(train\_dir, 'ma
 
 pf\_preprocess.convert\_jpg\_mask\_to\_binary\_mask(os.path.join(val\_dir, 'masks'))
 
-> <img src="media/image23.png" width="631" height="66" />
+> <img src="media/image16.png" />
 
 ### 
 
@@ -571,7 +571,7 @@ pf\_preprocess.convert\_jpg\_mask\_to\_binary\_mask(os.path.join(val\_dir, 'mask
 >
 > display\_overlay(test\_image, test\_mask, ispath=True)
 >
-> <img src="media/image24.png" width="439" height="308" />
+> <img src="media/image17.png" />
 
 Figure : Example of masked image after making masks binary
 
@@ -615,7 +615,7 @@ notes="test model"))
 
 model\_tuples\[0\]
 
-> <img src="media/image25.png" width="423" height="317" />
+> <img src="media/image18.png" />
 >
 > This was useful during development allowing several model variations to be trained unattended simultaneously.
 >
@@ -639,7 +639,7 @@ os.path.join(train\_dir, 'masks'),
 
 description)
 
-<img src="media/image26.png" width="576" height="92" />
+<img src="media/image18-1.png" />
 
 > We can test our generator by getting a batch of images and masks and displaying a superimposed impage of the two:
 
@@ -653,7 +653,7 @@ mask1 = np.uint8(mask\[0\]) \# mask wasn't rescaled because values are 0 or 1
 
 display\_overlay(image1,mask1, ispath=False)
 
-<img src="media/image27.png" width="340" height="264" />
+<img src="media/image19.png" />
 
 > The example shows an image that is rotated to the left. The mask is correspondingly rotated.
 >
@@ -667,7 +667,7 @@ display\_overlay(image1,mask1, ispath=False)
 >
 > augment=False)
 >
-> <img src="media/image28.png" width="558" height="101" />
+> <img src="media/image20.png" />
 >
 > import cv2
 >
@@ -681,11 +681,11 @@ display\_overlay(image1,mask1, ispath=False)
 >
 > Here we show the image without a mask:
 >
-> <img src="media/image29.png" width="358" height="272" />
+> <img src="media/image21.png" />
 >
 > And now, we show the image with the mask:
 >
-> <img src="media/image30.png" width="350" height="266" />
+> <img src="media/image22.png" />
 >
 > For validation, we don’t want any augmentation and we don’t see any.
 >
@@ -699,7 +699,7 @@ image = next(test\_generator)
 
 display\_overlay(image\[0\], None, ispath=False)
 
-<img src="media/image31.png" width="353" height="268" />
+<img src="media/image23.png" />
 
 > After we are done training, we will save the description object and the trained model weights in a pickle file:
 
@@ -899,17 +899,17 @@ pf\_video.create\_video\_with\_test\_data(source\_dir, model, description, targe
 >
 > tensorboard --logdir=‘./logs’
 >
-> <img src="media/image32.png" width="429" height="512" />
+> <img src="media/image24.png" />
 
 #### View Video
 
 > We can navigate on our local computer to the results directory that was created in our data directory. In that directory, we find a sub-directory for each model that was trained. In that directory, we find 2 files; 1) data.pickle and 2) an mp4 video file.
 >
-> <img src="media/image33.png" width="720" height="275" />
+> <img src="media/image25.png" width="720" height="275" />
 >
 > The pickle file includes a tuple of the description and trained model weights. The mp4 video file is a video of all test data sequences with an overlay generated by our model. Below is a screen shot of a sample video:
 >
-> <img src="media/image34.png" width="409" height="306" />
+> <img src="media/image26.png" width="409" height="306" />
 
 ### 
 
@@ -917,7 +917,7 @@ pf\_video.create\_video\_with\_test\_data(source\_dir, model, description, targe
 
 > The superimposed video output is based on test data from the original dataset. I wanted to see how this would work on a video that was not part of the dataset. The script ‘create\_superimposed\_video\_from\_MP4.ipynb’ will take any MP4 video and extract the frames into image files that can be used with the model. The output was impressive, below is a screenshot:
 >
-> <img src="media/image35.png" width="347" height="259" />
+> <img src="media/image27.png" />
 
 Summary/Next Steps
 ==================
