@@ -8,7 +8,9 @@ The PathFinder project aims to teach off-road autonomous vehicles how to determi
 **Problem Statement:**
 *“Provide ground-based autonomous vehicles and robots support with understanding their surroundings in order to select an adequate navigable path using a model of Autoencoders and Convolutional Neural Networks trained using Keras with a sample videos from a variety of landscapes and lighting conditions.”*
 
-[![Pathfinder](http://img.youtube.com/vi/YpPW69S8C2M/0.jpg)](https://www.youtube.com/watch?v=YpPW69S8C2M "Pathfinder")
+<p algn="center">
+[![Pathfinder](media/image1.png)](https://www.youtube.com/watch?v=YpPW69S8C2M "Pathfinder")
+<p>
 
 
 # Overview 
