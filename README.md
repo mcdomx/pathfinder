@@ -130,12 +130,12 @@ Downloaded data will be in 9 directories. 3 directories labeled with “Supplime
 **Move Downloaded Data into the Following Local Data Structure**
 
 <p align="center">
-> <img src="media/image2.png" height="50%" width= "50%" />
->
-> Figure : Each directory includes a series of video frames. Each directory includes a tag that represents the scene and lighting conditions. E.g. “DS1A” – Data Sequence 1 Scene A
+<img src="media/image2.png" height="50%" width= "50%" />
+
+Figure : Each directory includes a series of video frames. Each directory includes a tag that represents the scene and lighting conditions. E.g. “DS1A” – Data Sequence 1 Scene A
 <p>
 
-After downloading data, directories for <code>train</code> and <code>test</code> must be manually created and the respective downloaded directories respectively moved. In the screenshot above, the directories <code>89FinalData</code>, <code>orig_test_data</code> and <code>orig_train_data</code> were manually created.
+After downloading data, directories for <code>train</code> and <code>test</code> must be manually created.  The downloaded data will need to be moved to these directories by the user.  In the screenshot above, the directories <code>89FinalData</code>, <code>orig_test_data</code> and <code>orig_train_data</code> were manually created.
 
 Any reasonable name can be chosen for these directories. The names of these directories will be specifically referenced with a variable in the main Jupyter script.  
 
