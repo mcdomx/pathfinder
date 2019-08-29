@@ -12,7 +12,7 @@ The PathFinder project aims to teach off-road autonomous vehicles how to determi
 YouTube Video Summary
 <br>
 [![Pathfinder](http://img.youtube.com/vi/YpPW69S8C2M/3.jpg)](https://www.youtube.com/watch?v=YpPW69S8C2M "Pathfinder")
-<p>
+</p>
 
 
 # Overview 
