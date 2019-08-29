@@ -49,11 +49,11 @@ OpenCV is used to produce video output.
 Description of Hardware
 =======================
 
-Computer: iMac (Retina 5k, 2017)
+**Computer**: iMac (Retina 5k, 2017)
 
-Processor: 4.2 GHz Intel Core i7, 24GB
+**Processor**: 4.2 GHz Intel Core i7, 24GB
 
-GPU: Razer Core X Case with AMD Radeon RX Vega 64 External GPU Card
+**GPU**: Razer Core X Case with AMD Radeon RX Vega 64 External GPU Card
 
 Using a GPU is imperative to process the data in this project. When attempting to execute some of the steps using CPU’s, the kernel would fail.
 
@@ -66,7 +66,7 @@ Description of Data
 Data for this project should be downloaded from the orginal source.  Since the data set is large (~7GB), data is not included with the project executables.  
 
 Training and Test Data:
-> <http://www.mikeprocopio.com/labeledlagrdata.html>
+    <http://www.mikeprocopio.com/labeledlagrdata.html>
 
 The original dataset includes 6 training videos each having a sequence of 100 frames for a total of 600 training images. The images for each video are in a separate directory in the dowloaded data.  Each frame of the test sequences has a corresponding labeled overlay which will be referred to as a mask. Each pixel of each mask is marked as either ‘ground plane’ = 0, ‘obstacle’ = 1 or ‘unidentified’ = 2.
 
@@ -77,45 +77,27 @@ Frame Files
 
 Each downloaded data directory contains several files where each file represents a frame of video. The file format of each frame is “\*.mat” which includes several pieces of extractable information related to the frame. The data in each MAT file is a dictionary with the following keys:
 
-<code>
-\_\_header\_\_
-
-\_\_version\_\_
-
-\_\_globals\_\_
-
-im\_disparity
-
-im\_rgb
-
-stereo\_diff\_disparity
-
-stereo\_disparity\_valid
-
-stereo\_max\_disparity
-
-stereo\_min\_disparity
-
-frame\_number\_a
-
-frame\_number\_b
-
-frame\_number\_c
-
-image\_timestamp
-
-extract\_timestamp
-
-extract\_author
-
-extract\_version
-
-stereo\_mask\_precalc
-
-feature\_image\_precalc
-
-manual\_human\_labeling\_mask
-</code>
+    <code>
+    \_\_header\_\_
+    \_\_version\_\_
+    \_\_globals\_\_
+    im\_disparity
+    im\_rgb
+    stereo\_diff\_disparity
+    stereo\_disparity\_valid
+    stereo\_max\_disparity
+    stereo\_min\_disparity
+    frame\_number\_a
+    frame\_number\_b
+    frame\_number\_c
+    image\_timestamp
+    extract\_timestamp
+    extract\_author
+    extract\_version
+    stereo\_mask\_precalc
+    feature\_image\_precalc
+    manual\_human\_labeling\_mask
+    </code>
 
 For the scope of this project, we will focus on the data in <code>im\_rgb</code> and <code>manual\_human\_labeling\_task</code> where the <code>im\_rgb</code> data is the source image and the <code>manual\_human\_labeling\_task</code> data is the respective mask
 
@@ -167,74 +149,63 @@ B – Download Application
 ------------------------
 
 Clone the git repository using:
-> <code>git clone https://github.com/mcdomx/pathfinder.git<code>
 
-Once cloned, the application includes the following directories and files:
+    <code>git clone https://github.com/mcdomx/pathfinder.git<code>
 
--   code
+Once cloned, the application includes the following directories and files in the <code>code</code> directory:
 
     -   master\_pathfinder\_notebook.ipynb
-
     -   create\_superimposed\_video\_from\_MP4.ipynb
-
     -   create\_video\_from\_pickle\_file.ipynb
-
     -   data\_preprocess.py
-
     -   models.py
-
     -   video\_support\_processes.py
 
 
-The file <code>master\_pathfinder\_notebook.ipynb</code> is a Jupyter notebook that is used to drive the entire process including data setup, training and testing. The other two ipynb notebook files are used to create videos based on trained models. <code>create\_superimposed\_video\_from\_MP4</code> is designed to create a superimposed video based on an existing MP4 file, and <code>create\_video\_from\_pickle\_file</code> is designed to create a superimposed video based on a series of unmasked jpeg files which represent frames of a video.
+The file <code>master\_pathfinder\_notebook.ipynb</code> is a Jupyter notebook that is used to drive the entire process including data setup, training and testing. 
+
+<code>create\_superimposed\_video\_from\_MP4.ipynb</code> is designed to demostrte the completed model by creating a superimposed video based on any existing MP4 video (of an outdoor path environment)
+
+<code>create\_video\_from\_pickle\_file.ipynb</code> is designed to create a superimposed video based on a series of unmasked jpeg files which represent frames of a video.
 
 Supporting scripts are used as imports in the master notebook to keep the notebook as concise as reasonable.
 
-> <code>data\_preprocess.py</code> will handle data preparation steps.
->
-> <code>models.py</code> will define data generators and the model that is used to train the network.
->
-> <code>video\_support\_processes.py</code> will create videos based on training and test data.
+    <code>data\_preprocess.py</code> # handles data preparation steps.
+    <code>models.py</code> # defines data generators and the model used to train the network.
+    <code>video\_support\_processes.py</code> # creates superimposed videos based on training and test data.
+
 
 C – Run Master Notebook
 -----------------------
 
-Once the data set is downloaded, moved to training and test directories and the application is downloaded and unzipped, you can execute the program.
+Once the data set is moved to training and test directories and the application is cloned, the program can be executed.
 
-Start Jupyter notebook named ‘master\_pathfinder\_notebook.ipynb‘ from the ‘code’ directory.
+Start Jupyter notebook named <code>master\_pathfinder\_notebook.ipynb</code> from the ‘code’ directory.
 
 From terminal:
 
-> <code>cd ‘&lt;full path to unzipped application directory&gt;/code’</code>
->
-><code> jupyter notebook</code>
+    <code>cd ‘&lt;full path to unzipped application directory&gt;/code’</code>
+    <code> jupyter notebook</code>
 
 Each of the following steps are shown in detail in the **demonstration** section.
+
+Open the <code>master_pathfinder_notebook.ipynb</code>
 
 
 ### STEP 1 - Set Backend For GPU Support
 
-Open the <code>master_pathfinder_notebook.ipynb</code>
-
 In the notebook, the following line is optional based on your local GPU capabilities. If you are using an Nvidia GPU, the line used to set the backend can be commented out. Using PlaidML is necessary to use an AMD external GPU on masOS Mojave.
 
-<code>
-> \# OPTIONAL SETTING
->
-> \# Here we override the keras backend env variable to use plaidml
->
-> \# plaidml can make use of AMD GPUs
->
-> \# This assignment needs to be added before loading keras libraries
->
-> os.environ\["KERAS\_BACKEND"\] = "plaidml.keras.backend"
->
-> \# to install plaidML, activate appropriate environment and then:
->
-> \# pip install -U plaidml-keras
->
-> \# plaidml-setup
-</code>
+    <code>
+    \# OPTIONAL SETTING
+    \# Here we override the keras backend env variable to use plaidml
+    \# plaidml can make use of AMD GPUs
+    \# This assignment needs to be added before loading keras libraries
+    os.environ\["KERAS\_BACKEND"\] = "plaidml.keras.backend"
+    \# to install plaidML, activate appropriate environment and then:
+    \# pip install -U plaidml-keras
+    \# plaidml-setup
+    </code>
 
 ### STEP 2 - Check that you are in the correct current directory
 
@@ -242,27 +213,18 @@ Here we must ensure we are in the correct directory.
 
 If in the correct directory, support scripts are imported.
 
-<code>
-> pwd = !pwd
->
-> if pwd\[0\]\[-4:\] != "code":
->
-> print("ERROR: You're currently not in the project's code directory.")
->
-> print(pwd\[0\])
->
-> else:
->
-> print("SUCCESS: You are in the 'code' directory")
->
-> print(pwd\[0\])
->
-> import data\_preprocess as pf\_preprocess
->
-> import models as pf\_model
->
-> import video\_support\_processes as pf\_video
-</code>
+    <code>
+        pwd = !pwd
+        if pwd\[0\]\[-4:\] != "code":
+            print("ERROR: You're currently not in the project's code directory.")
+            print(pwd\[0\])
+        else:
+            print("SUCCESS: You are in the 'code' directory")
+            print(pwd\[0\])
+            import data\_preprocess as pf\_preprocess
+            import models as pf\_model
+            import video\_support\_processes as pf\_video
+    </code>
 
 <img src="media/image3.png" />
 
@@ -271,75 +233,36 @@ If in the correct directory, support scripts are imported.
 
 Here we set local directories for our downloaded data. The highlighted directories were created after downloading data in **STEP A** above. The validation split can be changed , if desired.
 
-This is where data downloaded from http://www.mikeprocopio.com/labeledlagrdata.html should exist
+This is where data downloaded from http://www.mikeprocopio.com/labeledlagrdata.html should exist:
 
-<code>
-original\_train\_dir = '/Users/markmcdonald/Desktop/89FinalData/orig\_train\_data'
+    <code>
+    original\_train\_dir = '.../89FinalData/orig\_train\_data'
 
-original\_test\_dir = '/Users/markmcdonald/Desktop/89FinalData/orig\_test\_data'
-</code>
+    original\_test\_dir = '.../89FinalData/orig\_test\_data'
+    </code>
 
-This is where directories containing data extracted from original data will be placed.
+    This is where directories containing data extracted from original data will be placed:
 
-<code>
-base\_dir = '/Users/markmcdonald/Desktop/89FinalData'
-</code>
+    <code>
+    base\_dir = '.../89FinalData'
+    </code>
 
-This is the percentage of validation data
+    'val_split' is the percentage of validation data which is taken from the test data:
 
-<code>
-val\_split = .20
-</code>
+    <code>
+    val\_split = .20
+    </code>
 
-> The entries are checked to ensure these directories exist:
-
-\# Test that supplied source data directory exists
-
-if not os.path.exists(original\_train\_dir):
-
-print("ERROR: Please supply a valid local directory that hold downloaded source train data.")
-
-print("Source data can be downloaded from http://www.mikeprocopio.com/labeledlagrdata.html.")
-
-else:
-
-print("SUCCESS: Found original train data directory: {}".format(original\_train\_dir))
-
-\# Test that supplied test data directory exists
-
-if not os.path.exists(original\_test\_dir):
-
-print("ERROR: Please supply a valid local directory that hold downloaded source test data.")
-
-print("Source data can be downloaded from http://www.mikeprocopio.com/labeledlagrdata.html.")
-
-else:
-
-print("SUCCESS: Found original test data directory: {}".format(original\_test\_dir))
-
-\# Test that supplied base data directory exists
-
-if not os.path.exists(base\_dir):
-
-print("ERROR: Please create a directory that will be used to store extracted source data.")
-
-print("ERROR: Doesn't Exist: ", base\_dir)
-
-else:
-
-print("SUCCESS: Found base directory: {}".format(base\_dir))
 
 <img src="media/image3-1.png" />
 
-> Now, we can set the supporting directory structure in our application. The ‘True’ argument is used to delete and recreate directories that already exist. During development, ‘False’ avoids recreating data when we only need to set variable names for the directories:
+Now, we can set the supporting directory structure in our application. The ‘True’ argument is used to delete and recreate directories that already exist. During development, ‘False’ avoids recreating data when we only need to set variable names for the directories:
 
-\# Here we establish the supporting directories for our training and validation data
+Here we establish the supporting directories for our training and validation data.  The True parameter will erase any pre-existing data in the directries.  Setting this parameter to False will only set the variables:
 
-\# The True parameter will erase any pre-existing data in the directries
-
-\# Setting this parameter to False will only set the variables
-
-train\_dir, train\_video\_dir, val\_dir = pf\_preprocess.set\_directories(base\_dir, True)
+    <code>
+    train\_dir, train\_video\_dir, val\_dir = pf\_preprocess.set\_directories(base\_dir, True)
+    </code>
 
 > <img src="media/image3-2.png"  />
 
@@ -347,558 +270,221 @@ train\_dir, train\_video\_dir, val\_dir = pf\_preprocess.set\_directories(base\_
 
 <img src="media/image4.png" />
 
-Figure : Data Directory Structure
+**Figure : Data Directory Structure**
+
 
 ### STEP 4 - Extract Data From Downloaded Files
 
-> Now that directories are setup for our training, we will extract images and masks from the downloaded \*.mat files. We run an extraction method on the training set and the test set.
+Now that directories are setup for our training, images and masks are extracted from the downloaded \*.mat files. We run an extraction method on the training set and the test set.
 
-\# Here we extract the image and mask data from our original data stored in MAT files
+    <code>
+    pf\_preprocess.create\_img\_and\_mask\_data(original\_train\_dir, train\_dir)
+    </code>
 
-pf\_preprocess.create\_img\_and\_mask\_data(original\_train\_dir, train\_dir)
+Note that masks won't be created for the test directories.
 
-\# For the test directories, masks won't be created
-
-pf\_preprocess.create\_img\_and\_mask\_data(original\_test\_dir, test\_dir)
+    <code>
+    pf\_preprocess.create\_img\_and\_mask\_data(original\_test\_dir, test\_dir)
+    </code>
 
 <img src="media/image5.png" />
 
-> This process extracted an image and a mask from each of the files from the original data set. Each image and mask pair is saved into a respective directory where it will be accessed for training and validation. Additionally, the test video sequence images are extracted and saved.
->
-> Now, we can move some of the extracted images into a validation set of directories:
+This process extracted an image and a mask from each of the files from the original data set. Each image and mask pair is saved into a respective directory where they are accessed for training and validation. Additionally, the test video sequence images are extracted and saved.
 
-\# Validation images and masks are pulled out of the training set and put into validation directories
+Now, we can move some of the extracted images into a validation set of directories:
 
-pf\_preprocess.create\_val\_set(train\_dir, val\_dir, val\_split)
+    <code>
+    pf\_preprocess.create\_val\_set(train\_dir, val\_dir, val\_split)
+    </code>
 
-<img src="media/image6.png" />
+> <img src="media/image6.png" />
+
 
 ### SIDEBAR: Understanding the data set
 
-> Let’s take a moment to understand the data that we are working with.
+Let’s take a moment to understand the data that we are working with.
 
 #### MAT File Structure
 
-> The downloaded data is a series of MAT files. These are simple data files with a dictionary of data elements. We can view the dictionary keys:
+The downloaded data is a series of MAT files. These are simple data files with a dictionary of data elements. We can view the dictionary keys:
 
-\# Review the original data
-
-import scipy.io
-
-mat\_file\_path = os.path.join(original\_train\_dir, 'labeled\_lagr\_data\_640x480\_DS1A/frame001.mat')
-
-mat\_file = scipy.io.loadmat(mat\_file\_path)
-
-\# Dictionary entries in the MAT file
-
-for k in mat\_file.keys():
-
-print(k)
+    <code>
+    import scipy.io
+    mat\_file\_path = os.path.join(original\_train\_dir, 'labeled\_lagr\_data\_640x480\_DS1A/frame001.mat')
+    mat\_file = scipy.io.loadmat(mat\_file\_path)
+    for k in mat\_file.keys():
+        print(k)
+    </code>
 
 > <img src="media/image7.png" />
->
-> We observe several pieces of data, but for our project, we will only need the ‘im\_rgb’ and ‘manual\_human\_labeling\_mask’ items. The ‘im\_rbg’ item is an array that represents the base image and the ‘manual\_human\_labeling\_mask’ is the respective mask.
->
-> We have one MAT file for every frame of video:
->
+
+We observe several elements of data in the MAT files, but for this project, only the <code>im\_rgb</code> and <code>manual\_human\_labeling\_mask</code> items are necessary. The <code>im\_rbg</code> item is an array that represents the base image and the <code>manual\_human\_labeling\_mask</code> is the respective mask.
+
+One MAT file exists for every frame of video:
+
 > <img src="media/image8.png" />
->
-> The frames are separated into directories where each directory is a different scene. We observe 6 scenes in our training set. The 6 scenes are in 3 settings with 2 different lighting conditions for each.
->
-> After running the data extraction script, we have images and masks in supporting directories from each of the frames:
->
+
+The frames are separated into directories where each directory is a different scene. We observe 6 scenes in our training set. The 6 scenes are in 3 settings with 2 different lighting conditions for each.
+
+After running the data extraction script, we have images and masks in supporting directories from each of the frames:
+
 > <img src="media/image9.png" />
->
-> The ‘data’ directory is necessary for the data generators that we will use to generate batches during training.
->
-> Each jpg file is prepended with the scene name.
->
-> Each jpg has a corresponding mask file with the same name:
->
+
+The <code>data</code> directory is necessary for the data generators that we will use to generate batches during training.
+
+Each jpg file is prepended with the scene name.
+
+Each jpg has a corresponding mask file with the same name:
+
 > <img src="media/image10.png" />
->
-> The masks don’t preview because they only have 1-channel.
->
-> We can observe the data stored im the ‘im\_rgb’ dictionary element:
 
-\# Original images are 640 x 480 (note that this is a vertical format)
+The masks don’t preview because they only have 1-channel.
 
-orig\_image = mat\_file\['im\_rgb'\]
+We can observe the data stored im the <code>im\_rgb</code> dictionary element.
 
-print("Image Shape: ", orig\_image.shape)
+Original images are 640 x 480 (note that this is a vertical format):
 
-<img src="media/image11.png" />
+    <code>
+    orig\_image = mat\_file\['im\_rgb'\]
+    print("Image Shape: ", orig\_image.shape)
+    </code>
 
-> As well as the mask:
+> <img src="media/image11.png" />
 
-\# Masks are the same size as the images but only one channel.
+Masks are the same size as the images but only one channel.
 
-orig\_mask = mat\_file\['manual\_human\_labeling\_mask'\]
+    <code>
+    orig\_mask = mat\_file\['manual\_human\_labeling\_mask'\]
+    print("Mask Shape: ",orig\_mask.shape)
+    </code>
 
-print("Mask Shape: ",orig\_mask.shape)
+> <img src="media/image12.png" />
 
-<img src="media/image12.png" />
+The original data is 640 x 480. We will make this smaller to train. Note that these are in vertical format. These are rotated when extracted.
 
-> The original data is 640 x 480. We will make this smaller to train. Note that these are in vertical format. We will rotate them when they are extracted.
->
-> The mask data ranges from 0 to 2.
+The mask data ranges from 0 to 2.  PathFinder is designed to work with masks having values of 0 and 1, where 1 represents navigable areas.
 
-\# The values in the mask range from 0 to 2 as expected
+This conversion will be made in that master notebook in Step 6 below.
 
-import numpy as np
-
-print(np.amin(orig\_mask))
-
-print(np.amax(orig\_mask))
-
-> We change this to 0 and 1 for our training.
-
-We also have a testing set; however, the test set does not have mask data:
-
-\# Test file does not have the same data elements
-
-mat\_test\_file\_path = os.path.join(original\_test\_dir, 'labeled\_lagr\_data\_640x480\_DS1A\_SupplementalFrames\_101-303/frame101.mat')
-
-mat\_test\_file = scipy.io.loadmat(mat\_test\_file\_path)
-
-\# Dictionary entries in the MAT file
-
-for k in mat\_test\_file.keys():
-
-print(k)
-
-> <img src="media/image13.png" />
->
-> Note that the ‘manual\_human\_labeling\_mask’ is missing. This is test data so there is no mask. We will get mask data from our model to create superimposed videos after training is complete.
 
 ### STEP 5 - Create a superimposed video file based on original data
 
-> In order to visualize the training and validation data, a video of superimposed masks is displayed.
->
-> Before making any changes to our data, we will create a video for each scene that superimposes the mask over the image. The superimposed data represents areas for safe navigation:
+In order to visualize the training and validation data, a video of superimposed masks is displayed.
 
-pf\_video.create\_superimposed\_video\_from\_MATFiles(original\_train\_dir, train\_video\_dir)
+Before making any changes to our data, we will create a video for each scene that superimposes the mask over the image. The superimposed data represents areas for safe navigation:
 
-<img src="media/image14.png" />
+    <code>
+    pf\_video.create\_superimposed\_video\_from\_MATFiles(original\_train\_dir, train\_video\_dir)
+    </code>
 
-> A screen shot of one of the videos is displayed below:
->
+> <img src="media/image14.png" />
+
+A screen shot of one of the videos is displayed below:
+
 > <img src="media/image15.png" />
 
-Figure : Frame from video of superimposed mask from training set
+**Figure : Frame from video of superimposed mask from training set**
 
-> This is a perfect mask created by a person. Our model will attempt to recreate the green area of the mask.
+This is a perfect mask created manually by a person. Pathfinder will attempt to recreate the green area of the mask.
+
 
 ### STEP 6 - Change the mask data to Binary Values
 
-> The initial masks from the data set contain more data than is needed. To simplify training, we will create masks with only 0’s and 1’s.
->
-> We make these changes in-place, so our original mask data is destroyed. After creating the superimposed videos, we no longer need this data. We use a support script to do this for us. The new masks have a 1 place for every navigable place in the image. The rest is filled with zero’s.
+The initial masks from the data set contain more data than is needed. To simplify training, we will create masks with only 0’s and 1’s.
 
-\# In-place conversion of original masks to binary masks for training purposes
+We make these changes in-place, so our original mask data is destroyed. After creating the superimposed videos, we no longer need this data. We use a support script to do this for us. The new masks have a 1 place for every navigable place in the image. The rest is filled with zero’s.
 
-\# This will destory the original masks and repalce them with binary masks
-
-pf\_preprocess.convert\_jpg\_mask\_to\_binary\_mask(os.path.join(train\_dir, 'masks'))
-
-pf\_preprocess.convert\_jpg\_mask\_to\_binary\_mask(os.path.join(val\_dir, 'masks'))
+    <code>
+    pf\_preprocess.convert\_jpg\_mask\_to\_binary\_mask(os.path.join(train\_dir, 'masks'))
+    pf\_preprocess.convert\_jpg\_mask\_to\_binary\_mask(os.path.join(val\_dir, 'masks'))
+    </code>
 
 > <img src="media/image16.png" />
 
-### 
 
-> We can create a superimposed single image to see that our conversion works properly. Since we will do this again later, we will create a support function to help:
->
-> \# Displays and image with a mask overlay
->
-> from keras.preprocessing import image as kimage
->
-> def display\_overlay(image, mask, ispath=True):
->
-> if ispath:
->
-> image = kimage.load\_img(image)
->
-> mask = kimage.load\_img(mask)
->
-> image = np.uint8(image)
->
-> mask = np.asarray(mask)
->
-> noneType = type(None)
->
-> if type(mask) != noneType:
->
-> \# make red layer for mask
->
-> mask = np.moveaxis(mask, 2, 0)
->
-> new\_mask = np.zeros((3, mask.shape\[1\], mask.shape\[2\]))
->
-> new\_mask\[0\] = np.array(mask\[0\]==0)\*180
->
-> new\_mask\[1\] = np.array(mask\[0\]==1)\*180
->
-> new\_mask = np.moveaxis(new\_mask, 0, 2)
->
-> image = np.uint8(new\_mask\*.3 + image\*.7)
->
-> if image.shape\[2\] != 3:
->
-> image = np.uint8((np.zeros(shape=(360,480,3))) + image)
->
-> plt.imshow(np.uint8(image))
->
-> Let’s pull an image and a mask and display them:
->
-> imagefiles = sorted(os.listdir(os.path.join(train\_dir, 'images', 'data')))
->
-> maskfiles = sorted(os.listdir(os.path.join(train\_dir, 'masks', 'data')))
->
-> test\_image = os.path.join(train\_dir, 'images', 'data', imagefiles\[0\])
->
-> test\_mask = os.path.join(train\_dir, 'masks', 'data', maskfiles\[0\])
->
-> display\_overlay(test\_image, test\_mask, ispath=True)
->
+A test superimposed single image is created to see that the conversion works properly. Since this is repeated later, a support function is created:
+
+    <code>
+    from keras.preprocessing import image as kimage
+    def display\_overlay(image, mask, ispath=True):
+    if ispath:
+        image = kimage.load\_img(image)
+        mask = kimage.load\_img(mask)
+        image = np.uint8(image)
+        mask = np.asarray(mask)
+        noneType = type(None)
+
+    if type(mask) != noneType:
+        \# make red layer for mask
+        mask = np.moveaxis(mask, 2, 0)
+        new\_mask = np.zeros((3, mask.shape\[1\], mask.shape\[2\]))
+        new\_mask\[0\] = np.array(mask\[0\]==0)\*180
+        new\_mask\[1\] = np.array(mask\[0\]==1)\*180
+        new\_mask = np.moveaxis(new\_mask, 0, 2)
+        image = np.uint8(new\_mask\*.3 + image\*.7)
+
+    if image.shape\[2\] != 3:
+        image = np.uint8((np.zeros(shape=(360,480,3))) + image)
+        plt.imshow(np.uint8(image))
+    </code>
+
+Pull an image and a mask and display them:
+
+    <code>
+    imagefiles = sorted(os.listdir(os.path.join(train\_dir, 'images', 'data')))
+    maskfiles = sorted(os.listdir(os.path.join(train\_dir, 'masks', 'data')))
+    test\_image = os.path.join(train\_dir, 'images', 'data', imagefiles\[0\])
+    test\_mask = os.path.join(train\_dir, 'masks', 'data', maskfiles\[0\])
+    display\_overlay(test\_image, test\_mask, ispath=True)
+    </code>
+
 > <img src="media/image17.png" />
 
-Figure : Example of masked image after making masks binary
+**Figure : Example of masked image after making masks binary**
 
-> Our result is reasonable.
->
-> Now, our data is ready to be trained.
+The result is reasonable.
+
+Now, data is ready to be trained.
 
 ### STEP 7 – Model Training
 
-> Training will rely on data generators for both the training and validation images. We will using augmentation because of our small data set. This poses a challenge because augmented images will also require augmented masks to go with them. Out support script called models.py includes data generators for both the training images and the validation images.
-
-#### Train Steps in Script
-
-> We are first going to test our generators so that we can see what they are doing. Since training data includes an augmented image, we need to make sure that masks are augmented exactly the same way.
->
-> We start by getting a model from our models.py support script:
-
-from keras import models
-
-from keras import layers
-
-\# get a model tuple to test the generators with
-
-model\_tuples = \[\]
-
-model\_tuples.append(pf\_model.get\_autoenc\_model(epochs=40,
-
-rot=45,
-
-zoom=\[.6,1.1\],
-
-hflip=True,
-
-vflip=False,
-
-notes="test model"))
-
-> The call to get\_autoenc\_model() can optionally include a setting for any of the items in the dictionary. The get\_autoenc\_model() function is designed to return a model as well as a description dictionary that includes the settings the model should be trained with. The dictionary settings are set with the arguments sent to the get\_autoenc\_model() function. Here, we can see the structure of our tuple.
->
-> The value of using the get\_autoenc\_model() process with a ‘description’ dictionary is so that we can be sure that a generator is created which matches the parameters of the model. Later, we create a generator using the description dictionary. An additionally benefit for the dictionary is that we can use this dictionary to create a video with the correct parameters as well as meaningful overlay and filename.
-
-model\_tuples\[0\]
-
-> <img src="media/image18.png" />
->
-> This was useful during development allowing several model variations to be trained unattended simultaneously.
->
-> Let’s retrieve a train generator using the ‘description’ dictionary. Elements of the dictionary are used to setup the generator so that it matches our model.
-
-description = model\_tuples\[0\]\[0\]
-
-color = description\['color'\]
-
-rot = description\['rotation'\]
-
-zoom = description\['zoom'\]
-
-hflip = description\['hflip'\]
-
-vflip = description\['vflip'\]
-
-train\_generator = pf\_model.get\_img\_mask\_generator(os.path.join(train\_dir, 'images'),
-
-os.path.join(train\_dir, 'masks'),
-
-description)
-
-<img src="media/image18-1.png" />
-
-> We can test our generator by getting a batch of images and masks and displaying a superimposed impage of the two:
-
-import cv2
-
-image, mask = next(train\_generator)
-
-image1 = np.uint8(np.asarray(image\[0\]\*255)) \# genereated image is scaled to 1/255
-
-mask1 = np.uint8(mask\[0\]) \# mask wasn't rescaled because values are 0 or 1
-
-display\_overlay(image1,mask1, ispath=False)
-
-<img src="media/image19.png" />
-
-> The example shows an image that is rotated to the left. The mask is correspondingly rotated.
->
-> We can do the same test on our validation generator. Note that we add a False value to the optional ‘augment’, argument. The get\_img\_mask\_generator() function will augment images by default. To avoid augmentation, we must set this argument to False.
->
-> val\_generator = pf\_model.get\_img\_mask\_generator(os.path.join(val\_dir, 'images'),
->
-> os.path.join(val\_dir, 'masks'),
->
-> description,
->
-> augment=False)
->
-> <img src="media/image20.png" />
->
-> import cv2
->
-> image, mask = next(val\_generator)
->
-> image = np.uint8(np.asarray(image\[0\]\*255)) \# genereated image is scaled to 1/255
->
-> mask = np.uint8(mask\[0\]) \# mask wasn't rescaled because values are 0 or 1
->
-> display\_overlay(image,None, ispath=False)
->
-> Here we show the image without a mask:
->
-> <img src="media/image21.png" />
->
-> And now, we show the image with the mask:
->
-> <img src="media/image22.png" />
->
-> For validation, we don’t want any augmentation and we don’t see any.
->
-> We will also use a generator to generate images from our test directory. These images will be used to create masks from our model later. This generator is created as a simplified way to generate test images in the same way that our model was trained with:
-
-test\_generator = pf\_video.get\_test\_img\_generator(os.path.join(test\_dir, 'images'), description)
-
-import cv2
-
-image = next(test\_generator)
-
-display\_overlay(image\[0\], None, ispath=False)
-
-<img src="media/image23.png" />
-
-> After we are done training, we will save the description object and the trained model weights in a pickle file:
-
-\# After training, we will save the description and the trained model weights in a pickle variable
-
-import pickle
-
-\# Use pickle to save history for later use
-
-def pickle\_save(variable, save\_path):
-
-save\_file = save\_path + '/data.pickle'
-
-if os.path.isdir(save\_path) == 0:
-
-os.mkdir(save\_path)
-
-with open(save\_file, 'wb') as f:
-
-pickle.dump(variable, f)
-
-\# Loading a prevously saved pickle file
-
-def pickle\_load(pickel\_filepath):
-
-with open(pickel\_filepath, 'rb') as f:
-
-data = pickle.load(f)
-
-return data
-
-> Now, we can get the model that we will train using our function that provides both a description object and a model.
-
-\# Get models for training
-
-model\_tuples = \[\]
-
-\# The following model parameters were determined to provide the best overal results
-
-model\_tuples.append(pf\_model.get\_autoenc\_model(epochs=40,
-
-rot=30,
-
-zoom=\[.6,1.0\],
-
-hflip=True,
-
-vflip=True,
-
-dropout=.4,
-
-notes="rot30-.6-1.0zoom\_dropout=.4BEST"))
-
-> Next, we start the training process. Several things are happening here. First, we train in a loop so that if we have multiple models in our model\_tuples object, they can train unattended.
->
-> We compile the model using the optimizer and loss functions stored in our description dictionary.
->
-> We setup a Tensorboard directory for this model so that it can be viewed separately from other trained models.
->
-> We retrieve generators for training and validation making sure that our validation generator does not use augmentation.
->
-> We use the Keras fit\_generator() method to train taking advantage of our generators.
->
-> We extend our dictionary to include the training results and history.
->
-> We create a text that will be overlaid on our video.
->
-> We create a directory for this training and save the description and model objects in a single pickle file in that directory.
->
-> Finally, we generate an overlaid video using the trained model and store the video in the model’s directory.
-
-from tensorflow.keras.callbacks import TensorBoard
-
-import math
-
-import shutil
-
-num\_models = len(model\_tuples)
-
-\# a model\_tupled object can contain multiple models
-
-\# us pf\_model.get\_autoencoder\_model() method to create tuples
-
-for i, model\_tuple in enumerate(model\_tuples):
-
-description = model\_tuple\[0\]
-
-model = model\_tuple\[1\]
-
-\# Compile model
-
-optimizer = description\['optimizer'\]
-
-loss = description\['loss'\]
-
-model.compile(optimizer=optimizer, loss=loss)
-
-\# Add Tensorboard capability
-
-name = description\["name"\]
-
-tensorboard = TensorBoard(log\_dir="logs/{}".format(name))
-
-\# remove the logging directory for the model if it exists
-
-if ( os.path.isdir("logs/{}".format(name)) ):
-
-shutil.rmtree("logs/{}".format(name))
-
-\# get number of images to train and validate
-
-num\_timages = len(os.listdir(os.path.join(train\_dir, 'images', 'data')))
-
-num\_vimages = len(os.listdir(os.path.join(val\_dir, 'images', 'data')))
-
-\# create generators based on the model description variables
-
-train\_gen = pf\_model.get\_img\_mask\_generator(os.path.join(train\_dir, 'images'),
-
-os.path.join(train\_dir, 'masks'),
-
-description,
-
-augment=True)
-
-val\_gen = pf\_model.get\_img\_mask\_generator(os.path.join(val\_dir, 'images'),
-
-os.path.join(val\_dir, 'masks'),
-
-description,
-
-augment=False)
-
-epochs = description\["epochs"\]
-
-batch\_size = description\["batch\_size"\]
-
-print(model.summary())
-
-\# step\_per\_epcoch and val\_steps is numbner of images / batchsize
-
-history = model.fit\_generator(train\_gen,
-
-steps\_per\_epoch=math.ceil(num\_timages/batch\_size),
-
-epochs=epochs, verbose=1,
-
-callbacks=\[tensorboard\],
-
-validation\_data=val\_gen,
-
-validation\_steps=math.ceil(num\_vimages/batch\_size),
-
-use\_multiprocessing=True,
-
-shuffle=True)
-
-results = model.evaluate\_generator(val\_gen, steps=math.ceil(num\_vimages/batch\_size))
-
-description.update({"history": history})
-
-description.update({"results": results})
-
-acc = str(np.round(results, decimals=4))
-
-print("Final Accuracy: ", acc)
-
-\# Create overlay text and prepare a directory to save video and pickle file
-
-overlay\_text = name + "\_loss=" + acc
-
-source\_dir = test\_dir
-
-target\_dir = os.path.join(results\_dir, overlay\_text)
-
-os.mkdir(target\_dir)
-
-\# Save description and model in a pickle file
-
-pickle\_save((description, model), target\_dir)
-
-print(description)
-
-\# Create video with mask overlay generated from model
-
-pf\_video.create\_video\_with\_test\_data(source\_dir, model, description, target\_dir)
+Training will rely on data generators for both the training and validation images. Augmentation is used because the data set is small. Using augmentation on the images poses a small challenge since the masks will need to be identically augmented. The support script <code>models.py</code> handles this and includes data generators for both the training images and the validation images.
+
+#### Training
+
+The training steps include several processes: 
+
+    + Models are trained using a loop to accommodate training multple model unattended.
+    + The model is compiled using the optimizer and loss functions stored in the description dictionary.
+    + A Tensorboard directory for this model so that it can be viewed separately from other trained models.
+    + Data generators are retrieved for training and validation and Keras <code>fit\_generator()</code> method is used to train taking advantage of the generators.
+    + A text overlay is created for the final video output.
+    + A pickle file is created for each trained model so that the training variables can be stored fro subsequent use.
+    + Finally, an overlaid video is genersted using the trained model.
 
 > After training of each model is complete, a summary statement will show where the video was saved.
 
 #### View Training Data Charts in Tensorboard
 
-> We can review the training progress in Tensorboard. Here, only the epoch\_val\_loss is shown as it is most indicative of the training progress:
+Training progress can be viewed in Tensorboard. Here, only the <code>epoch\_val\_loss</code> is shown as it is most indicative of the training progress:
 
--   From terminal:
+From terminal:
 
-> cd &lt;directory to project&gt;/code
->
-> tensorboard --logdir=‘./logs’
->
+    <code>
+    cd &lt;directory to project&gt;/code
+    tensorboard --logdir=‘./logs’
+    </code>
+
 > <img src="media/image24.png" />
 
 #### View Video
 
-> We can navigate on our local computer to the results directory that was created in our data directory. In that directory, we find a sub-directory for each model that was trained. In that directory, we find 2 files; 1) data.pickle and 2) an mp4 video file.
->
+We can navigate on our local computer to the results directory that was created in our data directory. In that directory, we find a sub-directory for each model that was trained. In that directory, we find 2 files; 1) data.pickle and 2) an mp4 video file.
+
 > <img src="media/image25.png" width="720" height="275" />
->
-> The pickle file includes a tuple of the description and trained model weights. The mp4 video file is a video of all test data sequences with an overlay generated by our model. Below is a screen shot of a sample video:
->
+
+The pickle file includes a tuple of the description and trained model weights. The mp4 video file is a video of all test data sequences with an overlay generated by our model. Below is a screen shot of a sample video:
+
 > <img src="media/image26.png" width="409" height="306" />
 
 ### 
@@ -909,7 +495,7 @@ pf\_video.create\_video\_with\_test\_data(source\_dir, model, description, targe
 >
 > <img src="media/image27.png" />
 
-Summary/Next Steps
+Summary
 ==================
 
 The initial model that was used was based on the Reuters multi-class classification example. The idea was that the mask represents a series of 0’s and 1’s where each classification represents a mask pixel. I tried this using a small 30x40 mask, but had limited success. It worked, but was not acceptable.
@@ -956,28 +542,5 @@ YouTube Video Links
 References
 ==========
 
-> Data set:
->
-> Michael J. Procopio, Hand-Labeled DARPA LAGR Datasets, <http://www.mikeprocopio.com/labeledlagrdata.html>, 2007
-
-Documentation
-=============
-
-One-Page Summary:
-
-> **Filename**: AutonomousNavigation\_OnePageSummary\_MarkMcDonald
-
-PowerPoint Presentation:
-
-> **Filename**: AutonomousNavigation\_Slides\_MarkMcDonald
-
-Full Report (this file):
-
-> **Filename**: AutonomousNavigation\_FullReport\_MarkMcDonald
-
-Code and Data:
-
-> **Filename**: AutonomousNavigation\_MarkMcDonald\_FinalCodeAndData.zip
->
-> (Should be under 10MB and should not exceed 20MB.)
-
+Data set:
+    Michael J. Procopio, Hand-Labeled DARPA LAGR Datasets, <http://www.mikeprocopio.com/labeledlagrdata.html>, 2007
