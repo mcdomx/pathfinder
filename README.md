@@ -102,9 +102,11 @@ The <code>manual_human_labeling_mask</code> frames have a resolution of 640x480 
 
 Each frame will be treated as a unique image for training purposes and not as a sequential video. For this series of images (which can be combined to make a video), the outcome of any frame is not dependent on the previous one so no sequential analysis is performed. Each frame can be considered a unique image and training does not need to be sequential.
 
-<img src="media/image1.png" />
+<p align="center">
+<img src="media/image1.png" width="75%" height="75%" />
+**Figure : Applied mask overlay**
+</p>
 
-**Figure : Mask Overlay**
 
 ## Modifications to Mask Data
 
