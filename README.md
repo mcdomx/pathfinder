@@ -1,23 +1,21 @@
-Introduction 
-=============
+# Introduction 
+---
 
 In recent years, autonomous vehicle navigation has been focused on road-based vehicles. This popularity is warranted by the enormous demand for safe and reliable travel and will continue to progress. Advances in robotics have extended beyond being able to assist humans with road-based travel needs. Modern robots have the ability to maneuver over complex natural landscapes like humans and animals can do. This brings the benefits of automated machinery to a much broader scope of applications such as farming, military, security, search and rescue, etc.
 
 The PathFinder project aims to teach off-road autonomous vehicles how to determine navigable paths. PathFinder is a deep learning-based application that will develop a heatmap from an image of a landscape that highlights navigable areas.
 
-> **Problem Statement:**
->
-> *“Provide ground-based autonomous vehicles and robots support with understanding their surroundings in order to select an adequate navigable path using a model of Autoencoders and Convolutional Neural Networks trained using Keras with a sample videos from a variety of landscapes and lighting conditions.”*
+    **Problem Statement:**
+    *“Provide ground-based autonomous vehicles and robots support with understanding their surroundings in order to select an adequate navigable path using a model of Autoencoders and Convolutional Neural Networks trained using Keras with a sample videos from a variety of landscapes and lighting conditions.”*
 
-Overview 
-=========
+
+# Overview 
+---
 
 The project is the result of an academic assignment at Harvard Exetnension's "Deep Learning" course.  The execution of the project is divided into 3 distinct efforts;
 
     1.  data handling
-
     2.  model development and training,
-
     3.  using the model to display the heat maps
 
 The training data for the model will originate from <http://www.mikeprocopio.com/labeledlagrdata.html>. The initial research project was focused on enhancing robotic navigation using stereoscopic visual which is beyond the scope of this project. The PathFinder project will be limited to identifying a path of travel with a single-plane image.
@@ -34,8 +32,8 @@ Once training is complete, the trained model will be used to produce a heatmap t
 
 
 
-Description of Technology
-=========================
+# Description of Technology
+---
 
 Pathfinder is based on Python.  A Jupyter master notebook relied on various support scripts to train and test the model.
 
@@ -46,8 +44,8 @@ Data generstors are used extensievely to produce augmented triaining data.
 OpenCV is used to produce video output.
 
 
-Description of Hardware
-=======================
+# Description of Hardware
+---
 
 **Computer**: iMac (Retina 5k, 2017)
 
@@ -60,8 +58,8 @@ Using a GPU is imperative to process the data in this project. When attempting t
 Since macOS Mojave, macOS only supports AMD GPU cards. TensorFlow only works on Nvidia cards so in order to use Tensorflow with a GPU, macOS HighSierra or earlier is needed. In order to use an eGPU with macOS Mojave, the PlaidML backend with Keras is necessary. As a result, the master notebook includes a line that will enable the PlaidML backend for Keras. This can be commented out as needed but can be left as-is without problems. If running the project where an Nvidia eGPU is used, this line should be commented out.
 
 
-Description of Data
-===================
+# Description of Data
+---
 
 Data for this project should be downloaded from the orginal source.  Since the data set is large (~7GB), data is not included with the project executables.  
 
@@ -72,12 +70,12 @@ The original dataset includes 6 training videos each having a sequence of 100 fr
 
 Each of the test scenes has a total of 500 frames each with no overlay information.
 
-Frame Files
+## Frame Files
 -----------
 
 Each downloaded data directory contains several files where each file represents a frame of video. The file format of each frame is “\*.mat” which includes several pieces of extractable information related to the frame. The data in each MAT file is a dictionary with the following keys:
 
-    <code>
+<code>
     \_\_header\_\_
     \_\_version\_\_
     \_\_globals\_\_
@@ -97,7 +95,7 @@ Each downloaded data directory contains several files where each file represents
     stereo\_mask\_precalc
     feature\_image\_precalc
     manual\_human\_labeling\_mask
-    </code>
+</code>
 
 For the scope of this project, we will focus on the data in <code>im\_rgb</code> and <code>manual\_human\_labeling\_task</code> where the <code>im\_rgb</code> data is the source image and the <code>manual\_human\_labeling\_task</code> data is the respective mask
 
