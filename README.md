@@ -94,11 +94,11 @@ Each downloaded data directory contains several files where each file represents
         feature_image_precalc
         manual_human_labeling_mask
 
-For the scope of this project, we will focus on the data in <code>im_rgb</code> and <code>manual_human_labeling_task</code> where the <code>im_rgb</code> data is the source image and the <code>manual_human_labeling_task</code> data is the respective mask
+For the scope of this project, we will focus on the data in <code>im_rgb</code> and <code>manual_human_labeling_mask</code> where the <code>im_rgb</code> data is the source image and the <code>manual_human_labeling_mask</code> data is the respective mask
 
 The <code>im_rgb</code> data frames have a resolution of 640x480 with 3 color layers (RGB Tensorflow ordering).
 
-The <code>manual_human_labeling_task</code> frames have a resolution of 640x480 with 1 layer.
+The <code>manual_human_labeling_mask</code> frames have a resolution of 640x480 with 1 layer.
 
 Each frame will be treated as a unique image for training purposes and not as a sequential video. For this series of images (which can be combined to make a video), the outcome of any frame is not dependent on the previous one so no sequential analysis is performed. Each frame can be considered a unique image and training does not need to be sequential.
 
@@ -129,9 +129,11 @@ Downloaded data will be in 9 directories. 3 directories labeled with “Supplime
 
 **Move Downloaded Data into the Following Local Data Structure**
 
-> <img src="media/image2.png" />
+<p align="center">
+> <img src="media/image2.png" height="50%" width= "50%" />
 >
 > Figure : Each directory includes a series of video frames. Each directory includes a tag that represents the scene and lighting conditions. E.g. “DS1A” – Data Sequence 1 Scene A
+<p>
 
 After downloading data, directories for <code>train</code> and <code>test</code> must be manually created and the respective downloaded directories respectively moved. In the screenshot above, the directories <code>89FinalData</code>, <code>orig_test_data</code> and <code>orig_train_data</code> were manually created.
 
