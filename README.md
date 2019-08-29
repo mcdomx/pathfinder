@@ -104,6 +104,7 @@ Each frame will be treated as a unique image for training purposes and not as a 
 
 <p align="center">
 <img src="media/image1.png" width="75%" height="75%" />
+<br>
 **Figure : Applied mask overlay**
 </p>
 
@@ -133,7 +134,7 @@ Downloaded data will be in 9 directories. 3 directories labeled with “Supplime
 
 <p align="center">
 <img src="media/image2.png" height="50%" width= "50%" />
-
+<br>
 Figure : Each directory includes a series of video frames. Each directory includes a tag that represents the scene and lighting conditions. E.g. “DS1A” – Data Sequence 1 Scene A
 </p>
 
