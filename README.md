@@ -5,8 +5,8 @@ In recent years, autonomous vehicle navigation has been focused on road-based ve
 
 The PathFinder project aims to teach off-road autonomous vehicles how to determine navigable paths. PathFinder is a deep learning-based application that will develop a heatmap from an image of a landscape that highlights navigable areas.
 
-    **Problem Statement:**
-    *“Provide ground-based autonomous vehicles and robots support with understanding their surroundings in order to select an adequate navigable path using a model of Autoencoders and Convolutional Neural Networks trained using Keras with a sample videos from a variety of landscapes and lighting conditions.”*
+**Problem Statement:**
+*“Provide ground-based autonomous vehicles and robots support with understanding their surroundings in order to select an adequate navigable path using a model of Autoencoders and Convolutional Neural Networks trained using Keras with a sample videos from a variety of landscapes and lighting conditions.”*
 
 
 # Overview 
@@ -14,9 +14,9 @@ The PathFinder project aims to teach off-road autonomous vehicles how to determi
 
 The project is the result of an academic assignment at Harvard Exetnension's "Deep Learning" course.  The execution of the project is divided into 3 distinct efforts;
 
-    1.  data handling
-    2.  model development and training,
-    3.  using the model to display the heat maps
+> 1.  data handling
+> 2.  model development and training,
+> 3.  using the model to display the heat maps
 
 The training data for the model will originate from <http://www.mikeprocopio.com/labeledlagrdata.html>. The initial research project was focused on enhancing robotic navigation using stereoscopic visual which is beyond the scope of this project. The PathFinder project will be limited to identifying a path of travel with a single-plane image.
 
@@ -71,7 +71,6 @@ The original dataset includes 6 training videos each having a sequence of 100 fr
 Each of the test scenes has a total of 500 frames each with no overlay information.
 
 ## Frame Files
------------
 
 Each downloaded data directory contains several files where each file represents a frame of video. The file format of each frame is “\*.mat” which includes several pieces of extractable information related to the frame. The data in each MAT file is a dictionary with the following keys:
 
@@ -109,23 +108,20 @@ Each frame will be treated as a unique image for training purposes and not as a 
 
 **Figure : Mask Overlay**
 
-Modifications to Mask Data
---------------------------
+## Modifications to Mask Data
 
 Masks from the original data set include a label for each pixel of 0,1 or 2 (‘ground plane’ = 0, ‘obstacle’ = 1 or ‘unidentified’ = 2).  For this project, we are only interested in things that are ground plane or not. If something is unidentified, we will assume that it is not navigable. Since we are looking for a path, we don’t want it to be labeled with 0, but rather with a 1. In order to achieve this, we will need to change our masks so that they are composed of 0’s or 1’s only and so that the 1 represents the path.
 
 This makes the masks binary and reduces the amount of data that needs to be processed.
 
-Directory Structure
--------------------
+## Directory Structure
 
 The instructions below will explain how to setup an initial directory structure for the program data.  The downloaded data and the program files do not need to be in the same directory structure. Upon executing the program, a series of support directories will be created in the data directory.  The downloaded data will be used to create training and validation data sets of images and masks. The setup process will also create a series of videos for each of the training sequences. A ‘results’ directory will be created to store training results.
 
-Installation, Configuration and Setup 
-======================================
+# Installation, Configuration and Setup 
+---
 
-A – Download Source Data
-------------------------
+## A – Download Source Data
 
 Data for the training comes from <http://www.mikeprocopio.com/labeledlagrdata.html> where research was done on robotic navigation over natural terrain using stereoscopic vision.
 
@@ -143,8 +139,7 @@ After downloading data, directories for <code>train</code> and <code>test</code>
 
 Any reasonable name can be chosen for these directories. The names of these directories will be specifically referenced with a variable in the main Jupyter script.  
 
-B – Download Application
-------------------------
+## B – Download Application
 
 Clone the git repository using:
 
@@ -173,8 +168,7 @@ Supporting scripts are used as imports in the master notebook to keep the notebo
     <code>video\_support\_processes.py</code> # creates superimposed videos based on training and test data.
 
 
-C – Run Master Notebook
------------------------
+## C – Run Master Notebook
 
 Once the data set is moved to training and test directories and the application is cloned, the program can be executed.
 
@@ -485,7 +479,6 @@ The pickle file includes a tuple of the description and trained model weights. T
 
 > <img src="media/image26.png" width="409" height="306" />
 
-### 
 
 ### Independent Test of External Video
 
@@ -493,8 +486,8 @@ The pickle file includes a tuple of the description and trained model weights. T
 >
 > <img src="media/image27.png" />
 
-Summary
-==================
+# Summary
+---
 
 The initial model that was used was based on the Reuters multi-class classification example. The idea was that the mask represents a series of 0’s and 1’s where each classification represents a mask pixel. I tried this using a small 30x40 mask, but had limited success. It worked, but was not acceptable.
 
@@ -530,15 +523,16 @@ The next steps to improve this are to experiment with different model designs. T
 
 Another area to explore would be to specifically identify hazards like trees, rocks, lakes, cliffs and kittens so that the model could explicitly make those areas of the image non-navigable.
 
-YouTube Video Links
-===================
+# YouTube Video Links
+---
 
 **2-Minute Video Link**: <https://www.youtube.com/watch?v=YpPW69S8C2M>
 
 **Detailed video link**: <https://www.youtube.com/watch?v=1XsFCXq8SQA>
 
-References
-==========
+
+# References
+---
 
 Data set:
     Michael J. Procopio, Hand-Labeled DARPA LAGR Datasets, <http://www.mikeprocopio.com/labeledlagrdata.html>, 2007
