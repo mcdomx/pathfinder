@@ -8,6 +8,8 @@ The PathFinder project aims to teach off-road autonomous vehicles how to determi
 **Problem Statement:**
 *“Provide ground-based autonomous vehicles and robots support with understanding their surroundings in order to select an adequate navigable path using a model of Autoencoders and Convolutional Neural Networks trained using Keras with a sample videos from a variety of landscapes and lighting conditions.”*
 
+[![Pathfinder](http://img.youtube.com/vi/YpPW69S8C2M/0.jpg)](https://www.youtube.com/watch?v=YpPW69S8C2M "Pathfinder")
+
 
 # Overview 
 ---
@@ -137,7 +139,9 @@ Downloaded data will be in 9 directories. 3 directories labeled with “Supplime
 <p align="center">
 <img src="media/image2.png" height="50%" width= "50%" />
 <br>
-Figure : Each directory includes a series of video frames. Each directory includes a tag that represents the scene and lighting conditions. E.g. “DS1A” – Data Sequence 1 Scene A
+Figure : Each directory represents a video sequence where the name represents the scene and lighting conditions.
+<br>
+E.g. “DS1A” – Data Sequence 1 Scene A
 </p>
 <br>
 
@@ -181,7 +185,7 @@ Start Jupyter notebook named <code>master_pathfinder_notebook.ipynb</code> from 
 
 From terminal:
 
-    cd ‘&lt;full path to unzipped application directory&gt;/code’
+    cd ‘full/path/to/application/directory/code’
     jupyter notebook
 
 Each of the following steps are shown in detail in the **demonstration** section.
@@ -212,12 +216,12 @@ If in the correct directory, support scripts are imported.
 
 
         pwd = !pwd
-        if pwd\[0\]\[-4:\] != "code":
+        if pwd[0][-4:] != "code":
             print("ERROR: You're currently not in the project's code directory.")
-            print(pwd\[0\])
+            print(pwd[0])
         else:
             print("SUCCESS: You are in the 'code' directory")
-            print(pwd\[0\])
+            print(pwd[0])
             import data_preprocess as pf_preprocess
             import models as pf_model
             import video_support_processes as pf_video
@@ -236,7 +240,6 @@ This is where data downloaded from http://www.mikeprocopio.com/labeledlagrdata.h
 
 
     original_train_dir = '.../89FinalData/orig_train_data'
-
     original_test_dir = '.../89FinalData/orig_test_data'
 
 
@@ -322,7 +325,7 @@ The downloaded data is a series of MAT files. These are simple data files with a
 
 <br>
 <p align="center">
-<img src="media/image7.png" width="50%" height="50%" />
+<img src="media/image7.png" width="30%" height="30%" />
 </p>
 <br>
 
@@ -342,7 +345,7 @@ After running the data extraction script, we have images and masks in supporting
 
 <br>
 <p align="center">
-<img src="media/image9.png" width="50%" height="50%" />
+<img src="media/image9.png" width="70%" height="70%" />
 </p>
 <br>
 
@@ -354,7 +357,7 @@ Each jpg has a corresponding mask file with the same name:
 
 <br>
 <p align="center">
-<img src="media/image10.png" width="50%" height="50%" />
+<img src="media/image10.png" width="70%" height="70%" />
 </p>
 <br>
 
@@ -369,7 +372,7 @@ Original images are 640 x 480 (note that this is a vertical format):
 
 <br>
 <p align="center">
-<img src="media/image11.png" width="50%" height="50%" />
+<img src="media/image11.png" width="40%" height="40%" />
 </p>
 <br>
 
@@ -380,7 +383,7 @@ Masks are the same size as the images but only one channel.
 
 <br>
 <p align="center">
-<img src="media/image12.png" width="50%" height="50%" />
+<img src="media/image12.png" width="40%" height="40%" />
 </p>
 <br>
 
@@ -401,7 +404,7 @@ Before making any changes to our data, we will create a video for each scene tha
 
 <br>
 <p align="center">
-<img src="media/image14.png" width="50%" height="50%" />
+<img src="media/image14.png" width="70%" height="70%" />
 </p>
 <br>
 
@@ -410,10 +413,10 @@ A screen shot of one of the videos is displayed below:
 <br>
 <p align="center">
 <img src="media/image15.png" width="75%" height="75%" />
+<br>
+Figure : Frame from video of superimposed mask from training set
 </p>
 <br>
-
-**Figure : Frame from video of superimposed mask from training set**
 
 This is a perfect mask created manually by a person. Pathfinder will attempt to recreate the green area of the mask.
 
@@ -535,7 +538,7 @@ The pickle file includes a tuple of the description and trained model weights. T
 
 ### Independent Test of External Video
 
-> The superimposed video output is based on test data from the original dataset. I wanted to see how this would work on a video that was not part of the dataset. The script ‘create_superimposed_video_from_MP4.ipynb’ will take any MP4 video and extract the frames into image files that can be used with the model. The output was impressive, below is a screenshot:
+The superimposed video output is based on test data from the original dataset. I wanted to see how this would work on a video that was not part of the dataset. The script ‘create_superimposed_video_from_MP4.ipynb’ will take any MP4 video and extract the frames into image files that can be used with the model. The output was impressive, below is a screenshot:
 
 <br>
 <p align="center">
@@ -554,7 +557,7 @@ I moved to an autoencoder model with the idea to encode an image and decode it a
 
 The final model still has limitations. I suspect that by adding layers to the model, I could see better results. Since the chosen model design worked, I chose to focus on changing the parameters to make the model work better. I made several observations that brought me to the final combination of parameters:
 
--   Color was better than black and white
+-   Training with color images was better than black and white
 
     -   I suspect that the color of objects helped to identify obstacles
 
