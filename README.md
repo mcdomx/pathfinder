@@ -14,6 +14,12 @@ YouTube Video Summary
 [![Pathfinder](http://img.youtube.com/vi/YpPW69S8C2M/3.jpg)](https://www.youtube.com/watch?v=YpPW69S8C2M "Pathfinder")
 </p>
 
+<p algn="center">
+[![Pathfinder](http://img.youtube.com/vi/YpPW69S8C2M/3.jpg)](https://www.youtube.com/watch?v=YpPW69S8C2M "Pathfinder")
+</p>
+
+[![Pathfinder](http://img.youtube.com/vi/YpPW69S8C2M/3.jpg)](https://www.youtube.com/watch?v=YpPW69S8C2M "Pathfinder")
+
 
 # Overview 
 ---
