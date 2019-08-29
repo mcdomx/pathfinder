@@ -133,7 +133,7 @@ Downloaded data will be in 9 directories. 3 directories labeled with “Supplime
 <img src="media/image2.png" height="50%" width= "50%" />
 
 Figure : Each directory includes a series of video frames. Each directory includes a tag that represents the scene and lighting conditions. E.g. “DS1A” – Data Sequence 1 Scene A
-<p>
+</p>
 
 After downloading data, directories for <code>train</code> and <code>test</code> must be manually created.  The downloaded data will need to be moved to these directories by the user.  In the screenshot above, the directories <code>89FinalData</code>, <code>orig_test_data</code> and <code>orig_train_data</code> were manually created.
 
@@ -143,17 +143,16 @@ Any reasonable name can be chosen for these directories. The names of these dire
 
 Clone the git repository using:
 
-    <code>git clone https://github.com/mcdomx/pathfinder.git<code>
+    git clone https://github.com/mcdomx/pathfinder.git
 
-Once cloned, the application includes the following directories and files in the <code>code</code> directory:
+Once cloned, the application includes the following files in the <code>code</code> directory:
 
-    -   master_pathfinder_notebook.ipynb
-    -   create_superimposed_video_from_MP4.ipynb
-    -   create_video_from_pickle_file.ipynb
-    -   data_preprocess.py
-    -   models.py
-    -   video_support_processes.py
-
+    master_pathfinder_notebook.ipynb
+    create_superimposed_video_from_MP4.ipynb
+    create_video_from_pickle_file.ipynb
+    data_preprocess.py
+    models.py
+    video_support_processes.py
 
 The file <code>master_pathfinder_notebook.ipynb</code> is a Jupyter notebook that is used to drive the entire process including data setup, training and testing. 
 
@@ -163,9 +162,9 @@ The file <code>master_pathfinder_notebook.ipynb</code> is a Jupyter notebook tha
 
 Supporting scripts are used as imports in the master notebook to keep the notebook as concise as reasonable.
 
-    <code>data_preprocess.py</code> # handles data preparation steps.
-    <code>models.py</code> # defines data generators and the model used to train the network.
-    <code>video_support_processes.py</code> # creates superimposed videos based on training and test data.
+    data_preprocess.py   # handles data preparation steps.
+    models.py    # defines data generators and the model used to train the network.
+    video_support_processes.py   # creates superimposed videos based on training and test data.
 
 
 ## C – Run Master Notebook
@@ -176,8 +175,8 @@ Start Jupyter notebook named <code>master_pathfinder_notebook.ipynb</code> from 
 
 From terminal:
 
-    <code>cd ‘&lt;full path to unzipped application directory&gt;/code’</code>
-    <code> jupyter notebook</code>
+    cd ‘&lt;full path to unzipped application directory&gt;/code’
+    jupyter notebook
 
 Each of the following steps are shown in detail in the **demonstration** section.
 
@@ -188,7 +187,7 @@ Open the <code>master_pathfinder_notebook.ipynb</code>
 
 In the notebook, the following line is optional based on your local GPU capabilities. If you are using an Nvidia GPU, the line used to set the backend can be commented out. Using PlaidML is necessary to use an AMD external GPU on masOS Mojave.
 
-    <code>
+
     \# OPTIONAL SETTING
     \# Here we override the keras backend env variable to use plaidml
     \# plaidml can make use of AMD GPUs
@@ -197,7 +196,7 @@ In the notebook, the following line is optional based on your local GPU capabili
     \# to install plaidML, activate appropriate environment and then:
     \# pip install -U plaidml-keras
     \# plaidml-setup
-    </code>
+
 
 ### STEP 2 - Check that you are in the correct current directory
 
@@ -205,7 +204,7 @@ Here we must ensure we are in the correct directory.
 
 If in the correct directory, support scripts are imported.
 
-    <code>
+
         pwd = !pwd
         if pwd\[0\]\[-4:\] != "code":
             print("ERROR: You're currently not in the project's code directory.")
@@ -216,10 +215,10 @@ If in the correct directory, support scripts are imported.
             import data_preprocess as pf_preprocess
             import models as pf_model
             import video_support_processes as pf_video
-    </code>
 
+<p align="center">
 <img src="media/image3.png" />
-
+</p>
 
 ### STEP 3 - Set Variables
 
@@ -227,40 +226,39 @@ Here we set local directories for our downloaded data. The highlighted directori
 
 This is where data downloaded from http://www.mikeprocopio.com/labeledlagrdata.html should exist:
 
-    <code>
+
     original_train_dir = '.../89FinalData/orig_train_data'
 
     original_test_dir = '.../89FinalData/orig_test_data'
-    </code>
 
-    This is where directories containing data extracted from original data will be placed:
 
-    <code>
+This is where directories containing data extracted from original data will be placed:
+
     base_dir = '.../89FinalData'
-    </code>
 
-    'val_split' is the percentage of validation data which is taken from the test data:
+'val_split' is the percentage of validation data which is taken from the test data:
 
-    <code>
     val_split = .20
-    </code>
 
-
+<p align="center">
 <img src="media/image3-1.png" />
+</p>
 
 Now, we can set the supporting directory structure in our application. The ‘True’ argument is used to delete and recreate directories that already exist. During development, ‘False’ avoids recreating data when we only need to set variable names for the directories:
 
 Here we establish the supporting directories for our training and validation data.  The True parameter will erase any pre-existing data in the directries.  Setting this parameter to False will only set the variables:
 
-    <code>
     train_dir, train_video_dir, val_dir = pf_preprocess.set_directories(base_dir, True)
-    </code>
 
-> <img src="media/image3-2.png"  />
+<p align="center">
+<img src="media/image3-2.png"  />
+</p>
 
 **The Data Directory Structure After Step 3**
 
-<img src="media/image4.png" />
+<p align="center">
+<img src="media/image4.png" width="50%" height="50%" />
+</p>
 
 **Figure : Data Directory Structure**
 
@@ -269,28 +267,25 @@ Here we establish the supporting directories for our training and validation dat
 
 Now that directories are setup for our training, images and masks are extracted from the downloaded \*.mat files. We run an extraction method on the training set and the test set.
 
-    <code>
     pf_preprocess.create_img_and_mask_data(original_train_dir, train_dir)
-    </code>
 
 Note that masks won't be created for the test directories.
 
-    <code>
     pf_preprocess.create_img_and_mask_data(original_test_dir, test_dir)
-    </code>
 
+<p align="center">
 <img src="media/image5.png" />
+</p>
 
 This process extracted an image and a mask from each of the files from the original data set. Each image and mask pair is saved into a respective directory where they are accessed for training and validation. Additionally, the test video sequence images are extracted and saved.
 
 Now, we can move some of the extracted images into a validation set of directories:
 
-    <code>
     pf_preprocess.create_val_set(train_dir, val_dir, val_split)
-    </code>
 
-> <img src="media/image6.png" />
-
+<p align="center">
+<img src="media/image6.png" />
+</p>
 
 ### SIDEBAR: Understanding the data set
 
@@ -300,27 +295,31 @@ Let’s take a moment to understand the data that we are working with.
 
 The downloaded data is a series of MAT files. These are simple data files with a dictionary of data elements. We can view the dictionary keys:
 
-    <code>
     import scipy.io
     mat_file_path = os.path.join(original_train_dir, 'labeled_lagr_data_640x480_DS1A/frame001.mat')
     mat_file = scipy.io.loadmat(mat_file_path)
     for k in mat_file.keys():
         print(k)
-    </code>
 
-> <img src="media/image7.png" />
+<p align="center">
+<img src="media/image7.png" width="50%" height="50%" />
+</p>
 
 We observe several elements of data in the MAT files, but for this project, only the <code>im_rgb</code> and <code>manual_human_labeling_mask</code> items are necessary. The <code>im_rbg</code> item is an array that represents the base image and the <code>manual_human_labeling_mask</code> is the respective mask.
 
 One MAT file exists for every frame of video:
 
-> <img src="media/image8.png" />
+<p align="center">
+<img src="media/image8.png" width="50%" height="50%" />
+</p>
 
 The frames are separated into directories where each directory is a different scene. We observe 6 scenes in our training set. The 6 scenes are in 3 settings with 2 different lighting conditions for each.
 
 After running the data extraction script, we have images and masks in supporting directories from each of the frames:
 
-> <img src="media/image9.png" />
+<p align="center">
+<img src="media/image9.png" width="50%" height="50%" />
+</p>
 
 The <code>data</code> directory is necessary for the data generators that we will use to generate batches during training.
 
@@ -328,7 +327,9 @@ Each jpg file is prepended with the scene name.
 
 Each jpg has a corresponding mask file with the same name:
 
-> <img src="media/image10.png" />
+<p align="center">
+<img src="media/image10.png" width="50%" height="50%" />
+</p>
 
 The masks don’t preview because they only have 1-channel.
 
@@ -336,21 +337,21 @@ We can observe the data stored im the <code>im_rgb</code> dictionary element.
 
 Original images are 640 x 480 (note that this is a vertical format):
 
-    <code>
     orig_image = mat_file\['im_rgb'\]
     print("Image Shape: ", orig_image.shape)
-    </code>
 
-> <img src="media/image11.png" />
+<p align="center">
+<img src="media/image11.png" width="50%" height="50%" />
+</p>
 
 Masks are the same size as the images but only one channel.
 
-    <code>
     orig_mask = mat_file\['manual_human_labeling_mask'\]
     print("Mask Shape: ",orig_mask.shape)
-    </code>
 
-> <img src="media/image12.png" />
+<p align="center">
+<img src="media/image12.png" width="50%" height="50%" />
+</p>
 
 The original data is 640 x 480. We will make this smaller to train. Note that these are in vertical format. These are rotated when extracted.
 
@@ -365,15 +366,17 @@ In order to visualize the training and validation data, a video of superimposed 
 
 Before making any changes to our data, we will create a video for each scene that superimposes the mask over the image. The superimposed data represents areas for safe navigation:
 
-    <code>
     pf_video.create_superimposed_video_from_MATFiles(original_train_dir, train_video_dir)
-    </code>
 
-> <img src="media/image14.png" />
+<p align="center">
+<img src="media/image14.png" width="50%" height="50%" />
+</p>
 
 A screen shot of one of the videos is displayed below:
 
-> <img src="media/image15.png" />
+<p align="center">
+<img src="media/image15.png" width="75%" height="75%" />
+</p>
 
 **Figure : Frame from video of superimposed mask from training set**
 
@@ -386,17 +389,16 @@ The initial masks from the data set contain more data than is needed. To simplif
 
 We make these changes in-place, so our original mask data is destroyed. After creating the superimposed videos, we no longer need this data. We use a support script to do this for us. The new masks have a 1 place for every navigable place in the image. The rest is filled with zero’s.
 
-    <code>
     pf_preprocess.convert_jpg_mask_to_binary_mask(os.path.join(train_dir, 'masks'))
     pf_preprocess.convert_jpg_mask_to_binary_mask(os.path.join(val_dir, 'masks'))
-    </code>
 
-> <img src="media/image16.png" />
+<p align="center">
+<img src="media/image16.png"  />
+</p>
 
 
 A test superimposed single image is created to see that the conversion works properly. Since this is repeated later, a support function is created:
 
-    <code>
     from keras.preprocessing import image as kimage
     def display_overlay(image, mask, ispath=True):
     if ispath:
@@ -418,21 +420,22 @@ A test superimposed single image is created to see that the conversion works pro
     if image.shape\[2\] != 3:
         image = np.uint8((np.zeros(shape=(360,480,3))) + image)
         plt.imshow(np.uint8(image))
-    </code>
+
 
 Pull an image and a mask and display them:
 
-    <code>
     imagefiles = sorted(os.listdir(os.path.join(train_dir, 'images', 'data')))
     maskfiles = sorted(os.listdir(os.path.join(train_dir, 'masks', 'data')))
     test_image = os.path.join(train_dir, 'images', 'data', imagefiles\[0\])
     test_mask = os.path.join(train_dir, 'masks', 'data', maskfiles\[0\])
     display_overlay(test_image, test_mask, ispath=True)
-    </code>
 
-> <img src="media/image17.png" />
-
+<p align="center">
+<img src="media/image17.png" width="75%" height="75%" />
 **Figure : Example of masked image after making masks binary**
+</p>
+
+
 
 The result is reasonable.
 
@@ -446,15 +449,15 @@ Training will rely on data generators for both the training and validation image
 
 The training steps include several processes: 
 
-    + Models are trained using a loop to accommodate training multple model unattended.
-    + The model is compiled using the optimizer and loss functions stored in the description dictionary.
-    + A Tensorboard directory for this model so that it can be viewed separately from other trained models.
-    + Data generators are retrieved for training and validation and Keras <code>fit_generator()</code> method is used to train taking advantage of the generators.
-    + A text overlay is created for the final video output.
-    + A pickle file is created for each trained model so that the training variables can be stored fro subsequent use.
-    + Finally, an overlaid video is genersted using the trained model.
++ Models are trained using a loop to accommodate training multple model unattended.
++ The model is compiled using the optimizer and loss functions stored in the description dictionary.
++ A Tensorboard directory for this model so that it can be viewed separately from other trained models.
++ Data generators are retrieved for training and validation and Keras <code>fit_generator()</code> method is used to train taking advantage of the generators.
++ A text overlay is created for the final video output.
++ A pickle file is created for each trained model so that the training variables can be stored fro subsequent use.
++ Finally, an overlaid video is genersted using the trained model.
 
-> After training of each model is complete, a summary statement will show where the video was saved.
+After training of each model is complete, a summary statement will show where the video was saved.
 
 #### View Training Data Charts in Tensorboard
 
@@ -462,29 +465,38 @@ Training progress can be viewed in Tensorboard. Here, only the <code>epoch_val_l
 
 From terminal:
 
-    <code>
     cd &lt;directory to project&gt;/code
     tensorboard --logdir=‘./logs’
-    </code>
 
-> <img src="media/image24.png" />
+<p align="center">
+<img src="media/image24.png" width="75%" height="75%" />
+**Figure : Example of tensorboard output**
+</p>
 
 #### View Video
 
 We can navigate on our local computer to the results directory that was created in our data directory. In that directory, we find a sub-directory for each model that was trained. In that directory, we find 2 files; 1) data.pickle and 2) an mp4 video file.
 
-> <img src="media/image25.png" width="720" height="275" />
+<p align="center">
+<img src="media/image25.png" width="50%" height="50%" />
+</p>
 
 The pickle file includes a tuple of the description and trained model weights. The mp4 video file is a video of all test data sequences with an overlay generated by our model. Below is a screen shot of a sample video:
 
-> <img src="media/image26.png" width="409" height="306" />
+<p align="center">
+<img src="media/image26.png" width="75%" height="75%" />
+**Figure : Frame of video after mask created from the trained model is applied**
+</p>
 
 
 ### Independent Test of External Video
 
 > The superimposed video output is based on test data from the original dataset. I wanted to see how this would work on a video that was not part of the dataset. The script ‘create_superimposed_video_from_MP4.ipynb’ will take any MP4 video and extract the frames into image files that can be used with the model. The output was impressive, below is a screenshot:
->
-> <img src="media/image27.png" />
+
+<p align="center">
+<img src="media/image27.png" width="75%" height="75%" />
+**Figure : Example of masked image from external video not part of training data**
+</p>
 
 # Summary
 ---
