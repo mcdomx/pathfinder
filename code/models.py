@@ -14,6 +14,8 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, Dropout
 from keras.models import Model
 
+# NOTE: In next version, use UNET model - see : https://github.com/wandb/witness/blob/master/model.py
+
 # Returns a tuple that includes a model description dictionary
 # and a Keras untrained model.
 # Arguments:
